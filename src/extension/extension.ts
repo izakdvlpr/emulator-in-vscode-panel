@@ -23,8 +23,15 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.window.registerWebviewViewProvider(EmulatorViewProvider.viewId, viewProvider, {
       webviewOptions: { retainContextWhenHidden: true },
     }),
-    vscode.commands.registerCommand('emulatorPanel.open', () =>
-      vscode.commands.executeCommand(`${EmulatorViewProvider.viewId}.focus`),
+    vscode.commands.registerCommand('emulatorPanel.open', () => viewProvider?.reveal()),
+    vscode.commands.registerCommand('emulatorPanel.openInEditor', () =>
+      viewProvider?.openInEditor({ newWindow: false }),
+    ),
+    vscode.commands.registerCommand('emulatorPanel.openInNewWindow', () =>
+      viewProvider?.openInEditor({ newWindow: true }),
+    ),
+    vscode.commands.registerCommand('emulatorPanel.moveToSidebar', () =>
+      viewProvider?.moveToSidebar(),
     ),
   );
 }

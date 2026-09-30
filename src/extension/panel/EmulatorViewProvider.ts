@@ -1,4 +1,3 @@
-import { randomBytes } from 'node:crypto';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import dayjs from 'dayjs';
@@ -7,6 +6,15 @@ import type { KeyInput, ScreenSize, TabState } from '../../shared/device';
 import { type HostToWebview, type WebviewToHost, webviewToHostSchema } from '../../shared/protocol';
 import { readConfig } from '../config';
 import type { DeviceCatalog, DeviceSession, FrameEvent, RgbaFrame } from '../device/DeviceProvider';
+import {
+  appOptions,
+  fromPanel,
+  fromView,
+  placeholderCommands,
+  renderAppHtml,
+  renderPlaceholderHtml,
+  type Surface,
+} from './surface';
 
 interface Tab {
   deviceId: string;
@@ -18,14 +26,19 @@ interface Tab {
 
 export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   static readonly viewId = 'emulatorPanel.screen';
+  static readonly editorViewType = 'emulatorPanel.editor';
 
   private readonly closingSessions = new Set<DeviceSession>();
   private readonly shutdowns = new Set<Promise<void>>();
 
   // As sessões pertencem ao provider, não à view: esconder ou descartar a view não desliga
   // nenhum emulador, só pausa o stream. Ao reabrir, a webview nova pede o estado e o stream volta.
-  private view: vscode.WebviewView | undefined;
-  private viewDisposables: vscode.Disposable[] = [];
+  // O app fica em um lugar por vez: na aba de editor, se existir, senão na sidebar. Assim há um
+  // stream só e o input vem de uma fonte só.
+  private sidebar: vscode.WebviewView | undefined;
+  private editor: vscode.WebviewPanel | undefined;
+  private active: Surface | undefined;
+  private surfaceDisposables: vscode.Disposable[] = [];
   private wasVisible = false;
   private viewport: ScreenSize | undefined;
 
@@ -47,26 +60,85 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   ) {}
 
   resolveWebviewView(view: vscode.WebviewView): void {
-    this.detachView();
-    this.view = view;
-    this.wasVisible = view.visible;
-    view.webview.options = {
-      enableScripts: true,
-      localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, 'dist', 'webview')],
-    };
-    view.webview.html = this.renderHtml(view.webview);
-    this.viewDisposables = [
-      view.webview.onDidReceiveMessage((message: unknown) => this.handleMessage(message)),
-      // Sem view visível não há por que gastar CPU mandando frames.
-      view.onDidChangeVisibility(() => {
-        if (view.visible === this.wasVisible) return;
-        this.wasVisible = view.visible;
+    if (this.active?.kind === 'sidebar') this.detachActive();
+    this.sidebar = view;
+    view.onDidDispose(() => {
+      if (this.sidebar !== view) return;
+      if (this.active?.kind === 'sidebar') this.detachActive();
+      this.sidebar = undefined;
+    });
+    if (this.editor) this.showPlaceholder(view);
+    else this.attach(fromView(view));
+  }
+
+  /** Move o app para uma aba de editor; com `newWindow`, para uma janela flutuante. */
+  async openInEditor({ newWindow }: { newWindow: boolean }): Promise<void> {
+    if (this.editor) {
+      this.editor.reveal();
+    } else {
+      const panel = vscode.window.createWebviewPanel(
+        EmulatorViewProvider.editorViewType,
+        'Emulator',
+        vscode.ViewColumn.Active,
+        { ...appOptions(this.extensionUri), retainContextWhenHidden: true },
+      );
+      panel.iconPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'emulator.svg');
+      this.editor = panel;
+      this.detachActive();
+      if (this.sidebar) this.showPlaceholder(this.sidebar);
+      this.attach(fromPanel(panel));
+      panel.onDidDispose(() => this.handleEditorClosed(panel));
+      void vscode.commands.executeCommand('setContext', 'emulatorPanel.inEditor', true);
+    }
+    if (!newWindow) return;
+    // O comando age sobre o editor ativo, e a aba recém-criada só fica ativa um pouco depois.
+    // Se a webview recarregar na janela nova, o `ready` dela refaz estado e stream.
+    if (!(await whenActive(this.editor))) return;
+    await vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow');
+  }
+
+  async moveToSidebar(): Promise<void> {
+    this.editor?.dispose();
+    await vscode.commands.executeCommand(`${EmulatorViewProvider.viewId}.focus`);
+  }
+
+  /** Mostra o app onde ele estiver. */
+  async reveal(): Promise<void> {
+    if (this.editor) this.editor.reveal();
+    else await vscode.commands.executeCommand(`${EmulatorViewProvider.viewId}.focus`);
+  }
+
+  // Fechar a aba (ou a janela flutuante) devolve o app para a sidebar; os devices continuam.
+  private handleEditorClosed(panel: vscode.WebviewPanel): void {
+    if (this.editor !== panel) return;
+    this.detachActive();
+    this.editor = undefined;
+    void vscode.commands.executeCommand('setContext', 'emulatorPanel.inEditor', false);
+    if (this.sidebar) this.attach(fromView(this.sidebar));
+  }
+
+  private attach(surface: Surface): void {
+    this.active = surface;
+    this.wasVisible = surface.visible;
+    surface.webview.options = appOptions(this.extensionUri);
+    surface.webview.html = renderAppHtml(surface.webview, this.extensionUri);
+    this.surfaceDisposables = [
+      surface.webview.onDidReceiveMessage((message: unknown) => {
+        // Uma webview que já perdeu o app não controla mais nada.
+        if (this.active === surface) this.handleMessage(message);
+      }),
+      // Sem superfície visível não há por que gastar CPU mandando frames.
+      surface.onDidChangeVisibility(() => {
+        if (this.active !== surface || surface.visible === this.wasVisible) return;
+        this.wasVisible = surface.visible;
         this.restartFrameStream();
       }),
-      view.onDidDispose(() => {
-        if (this.view === view) this.detachView();
-      }),
     ];
+  }
+
+  private showPlaceholder(view: vscode.WebviewView): void {
+    view.webview.options = { enableScripts: false, enableCommandUris: placeholderCommands };
+    view.webview.html = renderPlaceholderHtml();
   }
 
   /** Usado no `deactivate`: encerra todos os devices com timeouts curtos e espera terminar. */
@@ -76,11 +148,11 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
     await Promise.all(this.shutdowns);
   }
 
-  private detachView(): void {
+  private detachActive(): void {
     this.stopFrameStream();
-    for (const disposable of this.viewDisposables) disposable.dispose();
-    this.viewDisposables = [];
-    this.view = undefined;
+    for (const disposable of this.surfaceDisposables) disposable.dispose();
+    this.surfaceDisposables = [];
+    this.active = undefined;
     this.viewport = undefined;
     this.streamedDeviceId = undefined;
   }
@@ -334,7 +406,7 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   private restartFrameStream(): void {
     this.stopFrameStream();
     const session = this.activeSession();
-    if (!session || !this.viewport || !this.view?.visible) return;
+    if (!session || !this.viewport || !this.active?.visible) return;
     // Trocar de aba não deve mostrar, nem por um instante, a tela do device anterior. Vai pelo
     // mesmo canal dos frames, então chega antes do primeiro frame do stream novo.
     if (this.streamedDeviceId !== this.activeId) this.post({ type: 'clearScreen' });
@@ -415,44 +487,35 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   }
 
   private post(message: HostToWebview): void {
-    const view = this.view;
-    if (!view) return;
-    void view.webview.postMessage(message).then(
+    const surface = this.active;
+    if (!surface) return;
+    void surface.webview.postMessage(message).then(
       (delivered) => {
-        if (!delivered && message.type === 'frame' && this.view === view) {
+        if (!delivered && message.type === 'frame' && this.active === surface) {
           this.inFlightSeq = undefined;
         }
       },
       () => {},
     );
   }
+}
 
-  private renderHtml(webview: vscode.Webview): string {
-    const root = vscode.Uri.joinPath(this.extensionUri, 'dist', 'webview');
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(root, 'index.js'));
-    const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(root, 'index.css'));
-    const nonce = randomBytes(16).toString('base64');
-    const csp = [
-      "default-src 'none'",
-      `style-src ${webview.cspSource}`,
-      `script-src 'nonce-${nonce}'`,
-    ].join('; ');
+const activationTimeoutMs = 2000;
 
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="${csp}" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="${styleUri}" />
-  <title>Emulator</title>
-</head>
-<body>
-  <div id="root"></div>
-  <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
-</body>
-</html>`;
-  }
+function whenActive(panel: vscode.WebviewPanel | undefined): Promise<boolean> {
+  if (!panel) return Promise.resolve(false);
+  if (panel.active) return Promise.resolve(true);
+  return new Promise((resolve) => {
+    const done = (active: boolean) => {
+      clearTimeout(timer);
+      listener.dispose();
+      resolve(active);
+    };
+    const timer = setTimeout(() => done(false), activationTimeoutMs);
+    const listener = panel.onDidChangeViewState(() => {
+      if (panel.active) done(true);
+    });
+  });
 }
 
 function toKeyInput(message: Extract<WebviewToHost, { type: 'key' }>): KeyInput {

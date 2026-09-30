@@ -38,8 +38,57 @@
         "command": "emulatorPanel.open",
         "title": "Open Panel",
         "category": "Emulator"
+      },
+      {
+        "command": "emulatorPanel.openInEditor",
+        "title": "Open in Editor",
+        "category": "Emulator",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "emulatorPanel.openInNewWindow",
+        "title": "Open in New Window",
+        "category": "Emulator",
+        "icon": "$(multiple-windows)"
+      },
+      {
+        "command": "emulatorPanel.moveToSidebar",
+        "title": "Move to Sidebar",
+        "category": "Emulator",
+        "icon": "$(layout-sidebar-left)"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "emulatorPanel.openInEditor",
+          "when": "view == emulatorPanel.screen && !emulatorPanel.inEditor",
+          "group": "navigation@1"
+        },
+        {
+          "command": "emulatorPanel.openInNewWindow",
+          "when": "view == emulatorPanel.screen && !emulatorPanel.inEditor",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "emulatorPanel.moveToSidebar",
+          "when": "activeWebviewPanelId == 'emulatorPanel.editor'",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "emulatorPanel.openInEditor",
+          "when": "!emulatorPanel.inEditor"
+        },
+        {
+          "command": "emulatorPanel.moveToSidebar",
+          "when": "emulatorPanel.inEditor"
+        }
+      ]
+    },
     "configuration": {
       "title": "Emulator in VSCode Panel",
       "properties": {

@@ -58,6 +58,13 @@ Controles:
   Trocar de view na sidebar (ex.: voltar ao Explorer) **não** desliga: o stream pausa e volta
   quando a view reaparece.
 - A view pode ser arrastada para a Secondary Side Bar ou para o Panel se precisar de mais espaço.
+- **Aba de editor e janela flutuante**: os ícones na barra de título da view abrem o device numa
+  aba de editor (**Open in Editor**) ou direto numa janela separada (**Open in New Window**).
+  Como aba, ela se comporta como qualquer editor: arraste para um split ao lado do código, ou
+  para fora da janela para virar janela flutuante (que pode ficar sempre no topo pelo botão da
+  barra dela). Enquanto isso a sidebar mostra só um aviso. **Move to Sidebar** (na barra da aba)
+  ou fechar a aba/janela devolve o device para a sidebar, sem desligar nada. A view da sidebar
+  em si não pode ser arrastada para a área de editores: é uma limitação do VS Code.
 
 Logs do processo do emulador e erros de gRPC ficam no Output channel **Emulator**.
 
@@ -119,6 +126,9 @@ caso, use o setting ou o local padrão.
   (`src/extension/device/DeviceProvider.ts`). A webview só conhece coordenadas normalizadas e
   botões abstratos. O `CompositeProvider` junta a lista de Android e iOS; se uma plataforma
   falhar (sem SDK, sem Xcode), a outra continua listando e o erro vai para o Output.
+- O app fica em um lugar por vez: na aba de editor (`WebviewPanel`) quando ela existe, senão na
+  view da sidebar. Trocar de lugar só para o stream e recarrega o app na webview nova, que pede
+  o estado de novo; as sessões são do host e não reiniciam.
 
 iOS:
 
