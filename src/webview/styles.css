@@ -1,3 +1,18 @@
+:root {
+  --accent: var(--vscode-focusBorder);
+  --android: var(--vscode-charts-green, #89d185);
+  --ios: var(--vscode-charts-blue, #75beff);
+  --danger: var(--vscode-errorForeground, #f48771);
+  --ok: var(--vscode-testing-iconPassed, #73c991);
+  --warn: var(--vscode-editorWarning-foreground, #cca700);
+  --border: var(
+    --vscode-widget-border,
+    color-mix(in srgb, var(--vscode-foreground) 14%, transparent)
+  );
+  --radius: 6px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 html,
 body,
 #root {
@@ -7,8 +22,10 @@ body,
 body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
   color: var(--vscode-foreground);
-  background: var(--vscode-sideBar-background);
+  /* A cor de fundo vem de quem hospeda: sidebar ou área de editores. */
+  background: transparent;
   font-family: var(--vscode-font-family);
   font-size: var(--vscode-font-size);
 }
@@ -20,30 +37,11 @@ body {
   box-sizing: border-box;
 }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px;
-}
+/* ---------- Ícones e botões ---------- */
 
-.navbar {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  padding: 4px 8px 0;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px;
-  padding: 0 8px 8px;
-}
-
-.controls__icon {
+.icon {
   display: block;
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
   fill: none;
@@ -53,148 +51,389 @@ body {
   stroke-linejoin: round;
 }
 
-select {
-  flex: 1;
-  min-width: 0;
-  padding: 3px 6px;
-  color: var(--vscode-dropdown-foreground);
-  background: var(--vscode-dropdown-background);
-  border: 1px solid var(--vscode-dropdown-border);
-  border-radius: 2px;
-  font: inherit;
+.icon--fill {
+  fill: currentColor;
 }
 
 button {
-  padding: 4px 12px;
-  color: var(--vscode-button-foreground);
-  background: var(--vscode-button-background);
-  border: 1px solid var(--vscode-button-border, transparent);
-  border-radius: 2px;
   font: inherit;
   cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    opacity 0.15s,
+    transform 0.1s var(--ease);
 }
 
-button:hover:not(:disabled) {
-  background: var(--vscode-button-hoverBackground);
-}
-
-button.secondary {
-  color: var(--vscode-button-secondaryForeground);
-  background: var(--vscode-button-secondaryBackground);
-}
-
-button.secondary:hover:not(:disabled) {
-  background: var(--vscode-button-secondaryHoverBackground);
-}
-
-button.icon {
-  min-width: 32px;
-  padding: 4px 8px;
-  color: var(--vscode-icon-foreground);
-  background: transparent;
-}
-
-button.icon:hover:not(:disabled) {
-  background: var(--vscode-toolbar-hoverBackground);
+button:active:not(:disabled) {
+  transform: scale(0.94);
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: default;
 }
 
-select:focus-visible,
-button:focus-visible,
-.screen__canvas:focus-visible {
-  outline: 1px solid var(--vscode-focusBorder);
-  outline-offset: -1px;
+button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
 }
 
-.status {
-  margin: 0;
-  padding: 6px 8px;
+.ghost {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--vscode-icon-foreground);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+}
+
+.ghost:hover:not(:disabled) {
+  color: var(--vscode-foreground);
+  background: var(--vscode-toolbar-hoverBackground);
+}
+
+.ghost--spinning .icon {
+  animation: spin 0.8s linear infinite;
+}
+
+.ghost--nav {
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+}
+
+.action {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px 0 10px;
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
+  border: 1px solid var(--vscode-button-border, transparent);
+  border-radius: var(--radius);
+  font-weight: 600;
+  box-shadow: 0 2px 8px -3px color-mix(in srgb, var(--vscode-button-background) 80%, transparent);
+}
+
+.action:hover:not(:disabled) {
+  background: var(--vscode-button-hoverBackground);
+}
+
+.action .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.action--stop {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  box-shadow: none;
+}
+
+.action--stop:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 24%, transparent);
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 10px 8px;
+}
+
+.picker {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.picker__trigger {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px 0 6px;
+  box-sizing: border-box;
+  color: var(--vscode-dropdown-foreground);
+  background: var(--vscode-dropdown-background);
+  border: 1px solid var(--vscode-dropdown-border, var(--border));
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.picker__trigger:hover:not(:disabled),
+.picker--open .picker__trigger {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--vscode-dropdown-border, var(--border)));
+}
+
+.picker__trigger:active:not(:disabled) {
+  transform: none;
+}
+
+.picker__trigger > .icon:first-child {
   color: var(--vscode-descriptionForeground);
 }
 
-.status--busy::before {
-  content: "⟳ ";
-}
-
-.status--error {
-  color: var(--vscode-errorForeground);
-  background: var(--vscode-inputValidation-errorBackground);
-}
-
-.screen {
-  position: relative;
+.picker__value,
+.picker__name {
   flex: 1;
-  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.screen__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  touch-action: none;
-}
-
-.screen__touch-dot {
-  position: absolute;
+.picker__chevron {
   width: 14px;
   height: 14px;
-  margin: -7px 0 0 -7px;
-  border-radius: 50%;
-  background: var(--vscode-focusBorder);
-  opacity: 0.7;
-  pointer-events: none;
+  color: var(--vscode-descriptionForeground);
+  transition: transform 0.2s var(--ease);
 }
+
+.picker--open .picker__chevron {
+  transform: rotate(180deg);
+}
+
+.picker__live {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-right: 2px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent);
+}
+
+.picker__list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  /* Pode passar da largura do botão (que divide a linha com Start), mas não da webview. */
+  width: max-content;
+  min-width: 100%;
+  max-width: calc(100vw - 20px);
+  max-height: min(320px, 60vh);
+  padding: 4px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--vscode-foreground);
+  background: var(--vscode-editorWidget-background, var(--vscode-dropdown-background));
+  border: 1px solid var(--vscode-editorWidget-border, var(--border));
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 10px 28px -8px var(--vscode-widget-shadow, rgb(0 0 0 / 0.5));
+  animation: drop-in 0.16s var(--ease);
+}
+
+.picker__list[hidden] {
+  display: none;
+}
+
+.picker__group {
+  padding: 6px 8px 4px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.picker__group:not(:first-child),
+[role="group"] + [role="group"] .picker__group {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.picker__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.picker__option--highlighted {
+  color: var(--vscode-list-activeSelectionForeground, var(--vscode-foreground));
+  background: var(
+    --vscode-list-activeSelectionBackground,
+    color-mix(in srgb, var(--accent) 30%, transparent)
+  );
+}
+
+.picker__badge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.picker__check {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  stroke-width: 2.25;
+}
+
+.picker__option--highlighted .picker__check {
+  color: currentColor;
+}
+
+.picker__check--hidden {
+  visibility: hidden;
+}
+
+.platform {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+.platform .icon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2;
+}
+
+.platform--android {
+  color: var(--android);
+  background: color-mix(in srgb, var(--android) 16%, transparent);
+}
+
+.platform--ios {
+  color: var(--ios);
+  background: color-mix(in srgb, var(--ios) 16%, transparent);
+}
+
+.banner {
+  margin: 0 10px 8px;
+  padding: 6px 10px;
+  color: var(--vscode-foreground);
+  background: var(
+    --vscode-inputValidation-errorBackground,
+    color-mix(in srgb, var(--danger) 14%, transparent)
+  );
+  border: 1px solid var(--vscode-inputValidation-errorBorder, var(--danger));
+  border-radius: var(--radius);
+}
+
+/* ---------- Abas ---------- */
 
 .tabs {
   display: flex;
+  gap: 6px;
+  padding: 0 10px 6px;
   overflow-x: auto;
-  border-bottom: 1px solid var(--vscode-panel-border, transparent);
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
 .tab {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  border-bottom: 1px solid transparent;
-  margin-bottom: -1px;
+  max-width: 200px;
+  background: color-mix(in srgb, var(--vscode-foreground) 6%, transparent);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+  animation: pop-in 0.25s var(--ease);
 }
 
-.tab--active {
-  border-bottom-color: var(--vscode-panelTitle-activeBorder, var(--vscode-focusBorder));
+.tab:hover {
+  background: color-mix(in srgb, var(--vscode-foreground) 10%, transparent);
 }
 
-.tabs button.tab__label,
-.tabs button.tab__close {
+.tab--active,
+.tab--active:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.tab__label {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 4px 4px 8px;
-  color: var(--vscode-panelTitle-inactiveForeground, var(--vscode-descriptionForeground));
+  min-width: 0;
+  padding: 3px 2px 3px 9px;
+  color: var(--vscode-descriptionForeground);
   background: transparent;
   border: none;
 }
 
-.tab--active button.tab__label {
-  color: var(--vscode-panelTitle-activeForeground, var(--vscode-foreground));
-}
-
-.tabs button.tab__close {
-  padding: 4px 8px 4px 2px;
-}
-
-.tabs button.tab__label:hover:not(:disabled),
-.tabs button.tab__close:hover:not(:disabled) {
+.tab--active .tab__label {
   color: var(--vscode-foreground);
+}
+
+.tab__label:active:not(:disabled) {
+  transform: none;
+}
+
+.tab__close .icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2;
+}
+
+.tab__label .platform {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.tab__label .platform .icon {
+  width: 11px;
+  height: 11px;
+}
+
+.tab__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tab__close {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 3px 0 1px;
+  padding: 0;
+  color: var(--vscode-descriptionForeground);
   background: transparent;
+  border: none;
+  border-radius: 50%;
+}
+
+.tab__close:hover:not(:disabled) {
+  color: var(--vscode-foreground);
+  background: color-mix(in srgb, var(--vscode-foreground) 14%, transparent);
 }
 
 .tab__status {
+  flex-shrink: 0;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -202,14 +441,341 @@ button:focus-visible,
 }
 
 .tab__status--ready {
-  background: var(--vscode-testing-iconPassed, #73c991);
+  background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent);
 }
 
 .tab__status--starting,
 .tab__status--stopping {
-  background: var(--vscode-editorWarning-foreground, #cca700);
+  background: var(--warn);
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
 .tab__status--error {
-  background: var(--vscode-errorForeground);
+  background: var(--danger);
+}
+
+.tab__label .platform .tab__status {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 7px;
+  height: 7px;
+  box-shadow: 0 0 0 2px var(--vscode-sideBar-background, var(--vscode-editor-background));
+}
+
+/* ---------- Palco: moldura do device e controles ---------- */
+
+.stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.stage__device {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.screen {
+  position: relative;
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 0;
+  padding: 10px 12px 6px;
+  container-type: size;
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 45%,
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    transparent 75%
+  );
+}
+
+/*
+ * A moldura se encaixa no espaço mantendo a proporção da imagem (`--ratio`, largura/altura).
+ * As unidades `cq*` medem o `.screen`; o canvas fica exatamente do tamanho da imagem.
+ */
+.device {
+  --pad: clamp(5px, 2.6cqmin, 12px);
+  --w: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ratio));
+  --h: calc(var(--w) / var(--ratio));
+  --corner: calc(min(var(--w), var(--h)) * 0.1);
+  position: relative;
+  padding: var(--pad);
+  background: linear-gradient(150deg, #34363d, #17181b 60%);
+  border-radius: calc(var(--corner) + var(--pad));
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 20px 40px -14px rgb(0 0 0 / 0.6);
+  transition: box-shadow 0.4s var(--ease);
+  animation: rise 0.35s var(--ease);
+}
+
+.device--live {
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 20px 40px -14px rgb(0 0 0 / 0.6),
+    0 0 70px -24px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* Botões laterais, só de enfeite. */
+.device--portrait::before,
+.device--portrait::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  background: linear-gradient(90deg, #2a2c31, #3b3e45);
+}
+
+.device--portrait::before {
+  top: 20%;
+  right: -3px;
+  height: 9%;
+  border-radius: 0 2px 2px 0;
+}
+
+.device--portrait::after {
+  top: 14%;
+  left: -3px;
+  height: 14%;
+  border-radius: 2px 0 0 2px;
+}
+
+.device__display {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  overflow: hidden;
+  background: #000;
+  border-radius: var(--corner);
+}
+
+.device--idle .device__display {
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 65%
+    ),
+    var(--vscode-editor-background);
+}
+
+.device--error .device__display {
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      color-mix(in srgb, var(--danger) 18%, transparent),
+      transparent 65%
+    ),
+    var(--vscode-editor-background);
+}
+
+.device__display:has(.screen__canvas:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.screen__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  outline: none;
+  touch-action: none;
+}
+
+.screen__touch-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  pointer-events: none;
+}
+
+/* ---------- Estados dentro da moldura ---------- */
+
+.status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12%;
+  overflow: auto;
+  text-align: center;
+  animation: fade-in 0.3s var(--ease);
+}
+
+.status p {
+  margin: 0;
+}
+
+.status__icon {
+  width: 30px;
+  height: 30px;
+  color: var(--vscode-descriptionForeground);
+  stroke-width: 1.25;
+  opacity: 0.8;
+}
+
+.status--error .status__icon {
+  color: var(--danger);
+  opacity: 1;
+}
+
+.status__title {
+  color: var(--vscode-foreground);
+  font-weight: 600;
+}
+
+.status__hint {
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.92em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid color-mix(in srgb, var(--vscode-foreground) 15%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: spin 0.8s linear infinite;
+}
+
+.steps {
+  display: flex;
+  gap: 6px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--vscode-foreground) 20%, transparent);
+  transition:
+    width 0.3s var(--ease),
+    background-color 0.3s;
+}
+
+.steps__dot--done {
+  background: var(--ok);
+}
+
+.steps__dot--current {
+  width: 18px;
+  background: var(--accent);
+}
+
+/* ---------- Navegação e controles ---------- */
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 8px 6px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  gap: 2px;
+  max-width: calc(100% - 20px);
+  margin: 2px 10px 12px;
+  padding: 4px;
+  box-sizing: border-box;
+  background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+  border: 1px solid var(--vscode-editorWidget-border, var(--border));
+  border-radius: 10px;
+  box-shadow: 0 6px 18px -8px var(--vscode-widget-shadow, rgb(0 0 0 / 0.45));
+}
+
+.controls__divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: var(--border);
+}
+
+/* ---------- Animações ---------- */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* Sem movimento decorativo; os spinners ficam porque indicam trabalho em andamento. */
+@media (prefers-reduced-motion: reduce) {
+  .device,
+  .tab,
+  .status,
+  .picker__list,
+  .tab__status--starting,
+  .tab__status--stopping {
+    animation: none;
+  }
+
+  button,
+  .device,
+  .steps__dot {
+    transition: none;
+  }
 }

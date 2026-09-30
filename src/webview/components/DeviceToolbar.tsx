@@ -1,21 +1,54 @@
-import type { DeviceDescriptor, Platform, TabState } from '../../shared/device';
+import type { DeviceDescriptor, TabState } from '../../shared/device';
+import { DevicePicker } from './DevicePicker';
+import { Icon } from './Icon';
 
 interface DeviceToolbarProps {
   devices: DeviceDescriptor[];
   selectedId: string;
   /** Aba do device selecionado no dropdown, se houver. */
   selectedTab: TabState | undefined;
+  refreshing: boolean;
   onSelect: (deviceId: string) => void;
   onRefresh: () => void;
   onStart: () => void;
   onStop: () => void;
 }
 
-const platformLabels: Record<Platform, string> = { android: 'Android', ios: 'iOS' };
-
-function DeviceOption({ device }: { device: DeviceDescriptor }) {
+function ActionButton({
+  selected,
+  selectedId,
+  selectedTab,
+  onStart,
+  onStop,
+}: Pick<DeviceToolbarProps, 'selectedId' | 'selectedTab' | 'onStart' | 'onStop'> & {
+  selected: DeviceDescriptor | undefined;
+}) {
+  if (selectedTab && selectedTab.kind !== 'error') {
+    // Durante o Start o descriptor ainda diz "não rodando"; a aba é quem sabe.
+    const detach = selectedTab.kind !== 'starting' && selectedTab.attached;
+    return (
+      <button
+        type="button"
+        className="action action--stop"
+        disabled={selectedTab.kind === 'stopping'}
+        onClick={onStop}
+      >
+        {detach ? <Icon name="unlink" /> : <Icon name="stop" className="icon--fill" />}
+        {detach ? 'Detach' : 'Stop'}
+      </button>
+    );
+  }
   return (
-    <option value={device.id}>{device.running ? `${device.name} • running` : device.name}</option>
+    <button
+      type="button"
+      className="action"
+      disabled={selectedId === ''}
+      title={selected?.running ? 'Connect to the device that is already running' : undefined}
+      onClick={onStart}
+    >
+      {selected?.running ? <Icon name="link" /> : <Icon name="play" className="icon--fill" />}
+      {selected?.running ? 'Attach' : 'Start'}
+    </button>
   );
 }
 
@@ -23,59 +56,33 @@ export function DeviceToolbar({
   devices,
   selectedId,
   selectedTab,
+  refreshing,
   onSelect,
   onRefresh,
   onStart,
   onStop,
 }: DeviceToolbarProps) {
   const selected = devices.find((device) => device.id === selectedId);
-  // Com as duas plataformas na lista, agrupa para não misturar AVDs e simuladores.
-  const platforms = [...new Set(devices.map((device) => device.platform))];
 
   return (
     <div className="toolbar">
-      <select
-        aria-label="Device"
-        value={selectedId}
-        onChange={(event) => onSelect(event.target.value)}
-      >
-        {devices.length === 0 && <option value="">No devices found</option>}
-        {platforms.length > 1
-          ? platforms.map((platform) => (
-              <optgroup key={platform} label={platformLabels[platform]}>
-                {devices
-                  .filter((device) => device.platform === platform)
-                  .map((device) => (
-                    <DeviceOption key={device.id} device={device} />
-                  ))}
-              </optgroup>
-            ))
-          : devices.map((device) => <DeviceOption key={device.id} device={device} />)}
-      </select>
+      <DevicePicker devices={devices} selectedId={selectedId} onSelect={onSelect} />
       <button
         type="button"
-        className="icon"
+        className={refreshing ? 'ghost ghost--spinning' : 'ghost'}
         title="Refresh devices"
         aria-label="Refresh devices"
         onClick={onRefresh}
       >
-        ⟳
+        <Icon name="refresh" />
       </button>
-      {selectedTab && selectedTab.kind !== 'error' ? (
-        <button type="button" disabled={selectedTab.kind === 'stopping'} onClick={onStop}>
-          {/* Durante o Start o descriptor ainda diz "não rodando"; a aba é quem sabe. */}
-          {selectedTab.kind !== 'starting' && selectedTab.attached ? 'Detach' : 'Stop'}
-        </button>
-      ) : (
-        <button
-          type="button"
-          disabled={selectedId === ''}
-          title={selected?.running ? 'Connect to the device that is already running' : undefined}
-          onClick={onStart}
-        >
-          {selected?.running ? 'Attach' : 'Start'}
-        </button>
-      )}
+      <ActionButton
+        selected={selected}
+        selectedId={selectedId}
+        selectedTab={selectedTab}
+        onStart={onStart}
+        onStop={onStop}
+      />
     </div>
   );
 }

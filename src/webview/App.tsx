@@ -6,7 +6,6 @@ import { DeviceScreen } from './components/DeviceScreen';
 import { DeviceTabs } from './components/DeviceTabs';
 import { DeviceToolbar } from './components/DeviceToolbar';
 import { NavBar } from './components/NavBar';
-import { StatusBanner } from './components/StatusBanner';
 import { onHostMessage, postToHost } from './vscodeApi';
 
 interface AppState {
@@ -14,13 +13,17 @@ interface AppState {
   devicesError: string | undefined;
   selectedId: string;
   panel: PanelState;
+  refreshing: boolean;
 }
 
 type ScreenMessage = Extract<
   HostToWebview,
   { type: 'frame' | 'videoConfig' | 'videoChunk' | 'clearScreen' }
 >;
-type AppAction = Exclude<HostToWebview, ScreenMessage> | { type: 'select'; deviceId: string };
+type AppAction =
+  | Exclude<HostToWebview, ScreenMessage>
+  | { type: 'select'; deviceId: string }
+  | { type: 'refresh' };
 
 const screenMessageTypes = new Set<string>([
   'frame',
@@ -51,6 +54,7 @@ const initialState: AppState = {
   devicesError: undefined,
   selectedId: '',
   panel: { tabs: [], activeId: undefined },
+  refreshing: false,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -61,6 +65,7 @@ function reducer(state: AppState, action: AppAction): AppState {
         ...state,
         devices: action.devices,
         devicesError: action.error,
+        refreshing: false,
         selectedId: stillExists ? state.selectedId : (action.devices[0]?.id ?? ''),
       };
     }
@@ -75,6 +80,8 @@ function reducer(state: AppState, action: AppAction): AppState {
     }
     case 'select':
       return { ...state, selectedId: action.deviceId };
+    case 'refresh':
+      return { ...state, refreshing: true };
   }
 }
 
@@ -101,13 +108,17 @@ export function App() {
         devices={state.devices}
         selectedId={state.selectedId}
         selectedTab={selectedTab}
+        refreshing={state.refreshing}
         onSelect={(deviceId) => dispatch({ type: 'select', deviceId })}
-        onRefresh={() => postToHost({ type: 'refreshDevices' })}
+        onRefresh={() => {
+          dispatch({ type: 'refresh' });
+          postToHost({ type: 'refreshDevices' });
+        }}
         onStart={() => postToHost({ type: 'start', deviceId: state.selectedId })}
         onStop={() => postToHost({ type: 'stop', deviceId: state.selectedId })}
       />
       {state.devicesError && (
-        <p className="status status--error" role="alert">
+        <p className="banner" role="alert">
           {state.devicesError}
         </p>
       )}
@@ -118,20 +129,23 @@ export function App() {
         onSelect={(deviceId) => postToHost({ type: 'selectTab', deviceId })}
         onClose={(deviceId) => postToHost({ type: 'stop', deviceId })}
       />
-      <StatusBanner tab={activeTab} />
-      <DeviceScreen active={ready} />
-      <NavBar
-        enabled={ready}
-        platform={platform}
-        onButton={(button) => postToHost({ type: 'button', button })}
-      />
-      <DeviceControls
-        enabled={ready}
-        platform={platform}
-        onButton={(button) => postToHost({ type: 'button', button })}
-        onRotate={(direction) => postToHost({ type: 'rotate', direction })}
-        onScreenshot={() => postToHost({ type: 'screenshot' })}
-      />
+      <section className="stage">
+        <div className="stage__device">
+          <DeviceScreen tab={activeTab} />
+          <NavBar
+            enabled={ready}
+            platform={platform}
+            onButton={(button) => postToHost({ type: 'button', button })}
+          />
+        </div>
+        <DeviceControls
+          enabled={ready}
+          platform={platform}
+          onButton={(button) => postToHost({ type: 'button', button })}
+          onRotate={(direction) => postToHost({ type: 'rotate', direction })}
+          onScreenshot={() => postToHost({ type: 'screenshot' })}
+        />
+      </section>
     </main>
   );
 }

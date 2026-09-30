@@ -1,5 +1,6 @@
 import type { DeviceDescriptor, TabState } from '../../shared/device';
 import { deviceName } from '../deviceName';
+import { Icon, PlatformIcon } from './Icon';
 
 interface DeviceTabsProps {
   tabs: TabState[];
@@ -35,6 +36,14 @@ export function DeviceTabs({ tabs, activeId, devices, onSelect, onClose }: Devic
       {tabs.map((tab) => {
         const name = deviceName(devices, tab.deviceId);
         const active = tab.deviceId === activeId;
+        const status = (
+          <span className={`tab__status tab__status--${tab.kind}`} aria-hidden="true" />
+        );
+        // A aba pode existir antes de a plataforma ser conhecida (Start ainda em curso).
+        const platform =
+          tab.kind === 'ready' || tab.kind === 'stopping'
+            ? tab.platform
+            : devices.find((device) => device.id === tab.deviceId)?.platform;
         return (
           <div key={tab.deviceId} className={active ? 'tab tab--active' : 'tab'}>
             <button
@@ -45,8 +54,8 @@ export function DeviceTabs({ tabs, activeId, devices, onSelect, onClose }: Devic
               title={`${name} (${statusLabels[tab.kind]})`}
               onClick={() => onSelect(tab.deviceId)}
             >
-              <span className={`tab__status tab__status--${tab.kind}`} aria-hidden="true" />
-              {name}
+              {platform ? <PlatformIcon platform={platform} badge={status} /> : status}
+              <span className="tab__name">{name}</span>
             </button>
             <button
               type="button"
@@ -56,7 +65,7 @@ export function DeviceTabs({ tabs, activeId, devices, onSelect, onClose }: Devic
               disabled={tab.kind === 'stopping'}
               onClick={() => onClose(tab.deviceId)}
             >
-              ×
+              <Icon name="close" />
             </button>
           </div>
         );

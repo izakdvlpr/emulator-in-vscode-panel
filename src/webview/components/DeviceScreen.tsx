@@ -1,8 +1,16 @@
-import { type KeyboardEvent, type PointerEvent, useEffect, useRef, useState } from 'react';
-import type { Rotation } from '../../shared/device';
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import type { Platform, Rotation, ScreenSize, TabState } from '../../shared/device';
 import type { HostToWebview } from '../../shared/protocol';
 import { type Point, toClampedPoint, toNaturalPoint, toNormalizedPoint } from '../geometry';
 import { onHostMessage, postToHost } from '../vscodeApi';
+import { StatusBanner } from './StatusBanner';
 
 const specialKeys = new Set([
   'Backspace',
@@ -35,7 +43,11 @@ interface Decoder {
 
 type VideoConfigMessage = Extract<HostToWebview, { type: 'videoConfig' }>;
 
-export function DeviceScreen({ active }: { active: boolean }) {
+// Proporção da moldura antes do primeiro frame, parecida com a de um celular de cada plataforma.
+const placeholderRatio: Record<Platform, number> = { android: 9 / 20, ios: 9 / 19.5 };
+
+export function DeviceScreen({ tab }: { tab: TabState | undefined }) {
+  const active = tab?.kind === 'ready';
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const decoderRef = useRef<Decoder | undefined>(undefined);
@@ -44,8 +56,17 @@ export function DeviceScreen({ active }: { active: boolean }) {
   const gesture = useRef<{ mirror: boolean } | undefined>(undefined);
   const lastPointer = useRef<{ clientX: number; clientY: number } | undefined>(undefined);
   const [pinchDots, setPinchDots] = useState<[Point, Point] | undefined>(undefined);
+  // Só muda quando a resolução ou a orientação mudam, não a cada frame.
+  const [imageSize, setImageSize] = useState<ScreenSize | undefined>(undefined);
 
   useEffect(() => {
+    const resizeCanvas = (canvas: HTMLCanvasElement, width: number, height: number) => {
+      if (canvas.width === width && canvas.height === height) return;
+      canvas.width = width;
+      canvas.height = height;
+      setImageSize(width > 0 && height > 0 ? { width, height } : undefined);
+    };
+
     const closeDecoder = () => {
       const current = decoderRef.current;
       decoderRef.current = undefined;
@@ -60,8 +81,7 @@ export function DeviceScreen({ active }: { active: boolean }) {
             const canvas = canvasRef.current;
             const context = canvas?.getContext('2d');
             if (canvas && context && decoderRef.current === entry) {
-              if (canvas.width !== frame.displayWidth) canvas.width = frame.displayWidth;
-              if (canvas.height !== frame.displayHeight) canvas.height = frame.displayHeight;
+              resizeCanvas(canvas, frame.displayWidth, frame.displayHeight);
               context.drawImage(frame, 0, 0);
               rotationRef.current = entry.rotation;
               entry.produced = true;
@@ -111,10 +131,7 @@ export function DeviceScreen({ active }: { active: boolean }) {
         case 'clearScreen': {
           closeDecoder();
           const canvas = canvasRef.current;
-          if (canvas) {
-            canvas.width = 0;
-            canvas.height = 0;
-          }
+          if (canvas) resizeCanvas(canvas, 0, 0);
           return;
         }
         case 'frame': {
@@ -124,8 +141,7 @@ export function DeviceScreen({ active }: { active: boolean }) {
           const context = canvas?.getContext('2d');
           const { buffer, byteOffset, byteLength } = message.data;
           if (canvas && context && buffer instanceof ArrayBuffer) {
-            if (canvas.width !== message.width) canvas.width = message.width;
-            if (canvas.height !== message.height) canvas.height = message.height;
+            resizeCanvas(canvas, message.width, message.height);
             const pixels = new Uint8ClampedArray(buffer, byteOffset, byteLength);
             context.putImageData(new ImageData(pixels, message.width, message.height), 0, 0);
             rotationRef.current = message.rotation;
@@ -171,6 +187,7 @@ export function DeviceScreen({ active }: { active: boolean }) {
       if (current && current.decoder.state !== 'closed') current.decoder.close();
       canvas.width = 0;
       canvas.height = 0;
+      setImageSize(undefined);
       gesture.current = undefined;
       setPinchDots(undefined);
     }
@@ -262,22 +279,39 @@ export function DeviceScreen({ active }: { active: boolean }) {
     }
   };
 
+  const showing = active && imageSize !== undefined;
+  const platform =
+    tab?.kind === 'ready' || tab?.kind === 'stopping' ? (tab.platform ?? 'android') : 'android';
+  const ratio = showing ? imageSize.width / imageSize.height : placeholderRatio[platform];
+  const frameClass = [
+    'device',
+    `device--${platform}`,
+    ratio > 1 ? 'device--landscape' : 'device--portrait',
+    showing ? 'device--live' : 'device--idle',
+    tab?.kind === 'error' ? 'device--error' : '',
+  ].join(' ');
+
   return (
     <div ref={containerRef} className="screen">
-      <canvas
-        ref={canvasRef}
-        className="screen__canvas"
-        tabIndex={0}
-        aria-label="Device screen"
-        width={0}
-        height={0}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onPointerLeave={handlePointerLeave}
-        onKeyDown={handleKeyDown}
-      />
+      <div className={frameClass} style={{ '--ratio': ratio } as CSSProperties}>
+        <div className="device__display">
+          <canvas
+            ref={canvasRef}
+            className="screen__canvas"
+            tabIndex={showing ? 0 : -1}
+            aria-label="Device screen"
+            width={0}
+            height={0}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            onPointerLeave={handlePointerLeave}
+            onKeyDown={handleKeyDown}
+          />
+          {!showing && <StatusBanner tab={tab} />}
+        </div>
+      </div>
       {pinchDots?.map((dot, index) => (
         <span
           // biome-ignore lint/suspicious/noArrayIndexKey: sempre exatamente dois pontos fixos.
