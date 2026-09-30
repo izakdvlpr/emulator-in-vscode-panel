@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/public/example.gif" alt="Emulator: Device panel running a Pixel 10 inside VS Code" width="360">
+  <img src="docs/public/example.gif" alt="Emulator: Device panel running a Pixel 10 inside VS Code" width="660">
 </p>
 
 ## <samp>Install</samp>

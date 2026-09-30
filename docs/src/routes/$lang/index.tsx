@@ -32,7 +32,7 @@ function Home() {
   return (
     <>
       <section className={`${container} pt-12 pb-16 sm:pt-20 lg:pb-24`}>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-center lg:gap-16">
           <div className="min-w-0">
             <p className="font-mono text-xs tracking-[0.04em] text-muted">
               v{manifest.version} · VS Code {manifest.engines.vscode} · Android + iOS
@@ -63,12 +63,12 @@ function Home() {
               </Link>
             </div>
           </div>
-          <figure className="w-full max-w-[18.5rem] overflow-hidden rounded-[var(--radius-card)] border border-rule">
+          <figure className="w-full max-w-[50rem] overflow-hidden rounded-[var(--radius-card)] border border-rule">
             <img
               src={`${import.meta.env.BASE_URL}example.gif`}
               alt={content.demoAlt}
-              width={594}
-              height={986}
+              width={800}
+              height={437}
               className="block h-auto w-full"
             />
           </figure>
