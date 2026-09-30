@@ -3,7 +3,7 @@
 </p>
 
 <samp>
-  <h1 align="center">Emulator in VSCode Panel</h1>
+  <h1 align="center">Emulator in VS Code Panel</h1>
 </samp>
 
 <h4 align="center">

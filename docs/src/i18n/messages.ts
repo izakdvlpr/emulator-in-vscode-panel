@@ -51,7 +51,7 @@ export const messages: Record<Locale, Messages> = {
     htmlLang: 'pt-BR',
     languageName: 'Português',
     switchLanguage: 'Read in English',
-    brand: 'Emulator in VSCode Panel',
+    brand: 'Emulator in VS Code Panel',
     nav: {
       docs: 'Docs',
       install: 'Instalar',
@@ -100,7 +100,7 @@ export const messages: Record<Locale, Messages> = {
     htmlLang: 'en',
     languageName: 'English',
     switchLanguage: 'Ler em português',
-    brand: 'Emulator in VSCode Panel',
+    brand: 'Emulator in VS Code Panel',
     nav: {
       docs: 'Docs',
       install: 'Install',

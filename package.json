@@ -1,10 +1,9 @@
 {
-  "name": "emulator-in-vscode-panel",
-  "displayName": "Emulator in VSCode Panel",
+  "name": "vscode-emulator-panel",
+  "displayName": "Emulator in VS Code Panel",
   "description": "Run and control the Android Emulator and the iOS Simulator inside a VS Code panel.",
   "version": "0.0.1",
   "publisher": "izakdvlpr",
-  "private": true,
   "license": "MIT",
   "icon": "media/icon.png",
   "homepage": "https://izakdvlpr.github.io/emulator-in-vscode-panel/",
@@ -12,10 +11,15 @@
     "type": "git",
     "url": "https://github.com/izakdvlpr/emulator-in-vscode-panel"
   },
+  "bugs": {
+    "url": "https://github.com/izakdvlpr/emulator-in-vscode-panel/issues"
+  },
   "engines": {
     "vscode": "^1.95.0"
   },
   "categories": [
+    "Testing",
+    "Visualization",
     "Other"
   ],
   "main": "./dist/extension.js",
@@ -96,7 +100,7 @@
       ]
     },
     "configuration": {
-      "title": "Emulator in VSCode Panel",
+      "title": "Emulator in VS Code Panel",
       "properties": {
         "emulatorPanel.androidSdkPath": {
           "type": "string",
@@ -135,8 +139,9 @@
     "check": "biome check --write",
     "format": "biome format --write",
     "gen:proto": "proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/extension/android/generated proto/emulator_controller.proto",
-    "package": "bun run build && vsce package --no-dependencies --allow-missing-repository --skip-license --out emulator-in-vscode-panel.vsix",
-    "install:local": "bun run package && code --install-extension emulator-in-vscode-panel.vsix --force",
+    "package": "bun run build && vsce package --no-dependencies --out vscode-emulator-panel.vsix",
+    "install:local": "bun run package && code --install-extension vscode-emulator-panel.vsix --force",
+    "publish": "bun run build && vsce publish --no-dependencies",
     "watch:extension": "bun esbuild.config.ts --watch",
     "watch:webview": "vite build --watch"
   },
@@ -160,5 +165,17 @@
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2",
     "vite": "^8.3.1"
-  }
+  },
+  "keywords": [
+    "android",
+    "ios",
+    "emulator",
+    "simulator",
+    "avd",
+    "device",
+    "mobile",
+    "xcode",
+    "android studio",
+    "running devices"
+  ]
 }
