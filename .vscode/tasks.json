@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "watch:extension",
+      "type": "shell",
+      "command": "bun run watch:extension",
+      "isBackground": true,
+      "presentation": { "reveal": "never", "group": "watch" },
+      "problemMatcher": {
+        "owner": "esbuild",
+        "fileLocation": "relative",
+        "pattern": [
+          { "regexp": "^✘ \\[ERROR\\] (.*)$", "message": 1 },
+          { "regexp": "^\\s+(.*):(\\d+):(\\d+):$", "file": 1, "line": 2, "column": 3 }
+        ],
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": "^\\[watch\\] build started",
+          "endsPattern": "^\\[watch\\] build finished"
+        }
+      }
+    },
+    {
+      "label": "watch:webview",
+      "type": "shell",
+      "command": "bun run watch:webview",
+      "isBackground": true,
+      "presentation": { "reveal": "never", "group": "watch" },
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^__never_matches__$" },
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": "build started",
+          "endsPattern": "built in \\d+"
+        }
+      }
+    },
+    {
+      "label": "watch",
+      "dependsOn": ["watch:extension", "watch:webview"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}

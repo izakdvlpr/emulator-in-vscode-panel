@@ -1,0 +1,109 @@
+{
+  "name": "emulator-in-vscode-panel",
+  "displayName": "Emulator in VSCode Panel",
+  "description": "Run and control the Android Emulator and the iOS Simulator inside a VS Code panel.",
+  "version": "0.0.1",
+  "publisher": "izakdvlpr",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "emulatorPanel",
+          "title": "Emulator",
+          "icon": "media/emulator.svg"
+        }
+      ]
+    },
+    "views": {
+      "emulatorPanel": [
+        {
+          "type": "webview",
+          "id": "emulatorPanel.screen",
+          "name": "Device"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "emulatorPanel.open",
+        "title": "Open Panel",
+        "category": "Emulator"
+      }
+    ],
+    "configuration": {
+      "title": "Emulator in VSCode Panel",
+      "properties": {
+        "emulatorPanel.androidSdkPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path to the Android SDK. When empty, falls back to `ANDROID_HOME`, `ANDROID_SDK_ROOT` and the platform default location."
+        },
+        "emulatorPanel.grpcPort": {
+          "type": "number",
+          "default": 8654,
+          "minimum": 1024,
+          "maximum": 65535,
+          "description": "First TCP port tried for the emulator gRPC bridge. Each emulator started by the extension takes the next free port from here."
+        },
+        "emulatorPanel.videoCodec": {
+          "type": "string",
+          "enum": [
+            "h264",
+            "rgba"
+          ],
+          "enumDescriptions": [
+            "Compressed video recorded inside the device (`screenrecord`) and decoded with WebCodecs. Falls back to RGBA automatically when unavailable.",
+            "Raw bitmaps from the emulator gRPC API. Uses much more CPU; useful for debugging."
+          ],
+          "default": "h264",
+          "markdownDescription": "How the device screen is streamed to the panel."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "bun run build:extension && bun run build:webview && bun run build:ios",
+    "build:ios": "bun scripts/build-ios-helper.ts",
+    "build:extension": "bun esbuild.config.ts",
+    "build:webview": "vite build",
+    "typecheck": "tsc -p tsconfig.extension.json && tsc -p tsconfig.webview.json",
+    "check": "biome check --write",
+    "format": "biome format --write",
+    "gen:proto": "proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/extension/android/generated proto/emulator_controller.proto",
+    "package": "bun run build && vsce package --no-dependencies --allow-missing-repository --skip-license --out emulator-in-vscode-panel.vsix",
+    "install:local": "bun run package && code --install-extension emulator-in-vscode-panel.vsix --force",
+    "watch:extension": "bun esbuild.config.ts --watch",
+    "watch:webview": "vite build --watch"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.5",
+    "@grpc/proto-loader": "^0.8.1",
+    "@t3-oss/env-core": "^0.13.11",
+    "dayjs": "^1.11.23",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^20",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/vscode": "~1.95.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  }
+}
