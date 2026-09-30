@@ -11,6 +11,12 @@
 </h4>
 
 <p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://vsmarketplacebadges.dev/version-short/izakdvlpr.vscode-emulator-panel.svg?style=for-the-badge&color=75beff&labelColor=00315f"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://vsmarketplacebadges.dev/installs-short/izakdvlpr.vscode-emulator-panel.svg?style=for-the-badge&color=75beff&labelColor=00315f"></a>
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://img.shields.io/badge/Marketplace-75beff?&style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwMzE1ZiI+PHJlY3QgeD0iMiIgeT0iNyIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIyIiB5PSIxNSIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIxMCIgeT0iMTUiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIi8+PHJlY3QgeD0iMTMiIHk9IjIiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSAxNi41IDUuNSkiLz48L3N2Zz4K"></a>
   <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/"><img src="https://img.shields.io/badge/Documentation-75beff?&style=for-the-badge&logo=readthedocs&logoColor=00315f"></a>
   <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel"><img src="https://img.shields.io/badge/Github-75beff?&style=for-the-badge&logo=github&logoColor=00315f"></a>
   <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel/issues"><img src="https://img.shields.io/badge/Issues-75beff?&style=for-the-badge&logo=github&logoColor=00315f"></a>
@@ -23,21 +29,27 @@
   <img src="docs/public/example.gif" alt="Emulator: Device panel running a Pixel 10 inside VS Code" width="360">
 </p>
 
-## <samp>Quick start</samp>
+## <samp>Install</samp>
+
+<samp>Install it from the <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel">VS Code Marketplace</a>, search for <code>izakdvlpr.vscode-emulator-panel</code> in the Extensions view, or run:</samp>
+
+```bash
+code --install-extension izakdvlpr.vscode-emulator-panel
+```
+
+<samp>The Emulator icon shows up in the Activity Bar. To build from source instead:</samp>
 
 ```bash
 bun install
 bun run install:local   # build + .vsix + install into VS Code
 ```
 
-<samp>Then run <b>Developer: Reload Window</b> in VS Code and the Emulator icon shows up in the Activity Bar.</samp>
-
 ## <samp>Documentation</samp>
 
 <samp>
 
 - [Requirements](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/requirements): What needs to be installed before the first build.
-- [Install](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/install): Local build, `.vsix` packaging and installing it into VS Code.
+- [Install](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/install): The Marketplace, or a local `.vsix` build from source.
 - [Usage](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/usage): Open the panel, boot a device and run several at once.
 - [Controls](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/controls): Touch, gestures, device buttons, keyboard, clipboard and where the screen can live.
 - [Settings](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/settings): Extension settings, read straight from the manifest.

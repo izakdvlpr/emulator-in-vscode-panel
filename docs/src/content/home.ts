@@ -106,8 +106,8 @@ export const home: Record<Locale, HomeContent> = {
     },
     quickStart: {
       title: 'Início rápido',
-      lede: 'Da raiz do repositório, com Bun instalado:',
-      after: 'Depois, Developer: Reload Window e o ícone Emulator aparece na Activity Bar.',
+      lede: 'Instale pelo VS Code Marketplace ou direto do terminal:',
+      after: 'O ícone Emulator aparece na Activity Bar. Abra o painel e escolha um device.',
       requirementsLink: 'Pré-requisitos',
     },
     index: {
@@ -177,8 +177,8 @@ export const home: Record<Locale, HomeContent> = {
     },
     quickStart: {
       title: 'Quick start',
-      lede: 'From the repository root, with Bun installed:',
-      after: 'Then Developer: Reload Window, and the Emulator icon shows up in the Activity Bar.',
+      lede: 'Install from the VS Code Marketplace or straight from the terminal:',
+      after: 'The Emulator icon shows up in the Activity Bar. Open the panel and pick a device.',
       requirementsLink: 'Requirements',
     },
     index: {

@@ -8,9 +8,9 @@ import { localeSchema } from '@/i18n/locales';
 import { messages } from '@/i18n/messages';
 import { useLocale, useMessages } from '@/i18n/useLocale';
 import { manifest } from '@/lib/manifest';
+import { extensionId, marketplaceUrl } from '@/lib/site';
 
-const quickStartCode = `bun install
-bun run install:local`;
+const quickStartCode = `code --install-extension ${extensionId}`;
 
 export const Route = createFileRoute('/$lang/')({
   head: ({ params }) => {
@@ -42,13 +42,14 @@ function Home() {
             </h1>
             <p className="mt-6 max-w-[60ch] text-lg leading-8 text-ink-2">{content.lede}</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <Link
-                to="/$lang/docs/$slug"
-                params={{ lang, slug: 'install' }}
+              <a
+                href={marketplaceUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex h-11 items-center whitespace-nowrap rounded-[var(--radius-control)] bg-button px-5 text-[0.95rem] font-semibold text-button-ink transition-colors hover:bg-button-hover active:translate-y-px"
               >
                 {content.primaryCta}
-              </Link>
+              </a>
               <Link
                 to="/$lang/docs/$slug"
                 params={{ lang, slug: 'architecture' }}

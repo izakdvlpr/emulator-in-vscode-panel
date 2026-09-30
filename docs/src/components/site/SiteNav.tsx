@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useLocale, useMessages } from '@/i18n/useLocale';
-import { repositoryUrl } from '@/lib/site';
+import { marketplaceUrl, repositoryUrl } from '@/lib/site';
 import { Kbd } from '../docs/prose';
 import { DocsSidebar } from './DocsSidebar';
 import { GithubMark } from './GithubMark';
@@ -73,13 +73,14 @@ export function SiteNav() {
           >
             <Search className="size-[1.1rem]" aria-hidden />
           </button>
-          <Link
-            to="/$lang/docs/$slug"
-            params={{ lang, slug: 'install' }}
+          <a
+            href={marketplaceUrl}
+            target="_blank"
+            rel="noreferrer"
             className="ml-1 hidden h-9 items-center whitespace-nowrap rounded-[var(--radius-control)] bg-button px-3.5 text-sm font-semibold text-button-ink transition-colors hover:bg-button-hover active:translate-y-px sm:inline-flex"
           >
             {t.nav.install}
-          </Link>
+          </a>
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger aria-label={t.nav.menu} className={`${iconButton} lg:hidden`}>
               <Menu className="size-[1.1rem]" aria-hidden />
@@ -94,14 +95,15 @@ export function SiteNav() {
               </div>
               <div className="mt-auto flex items-center gap-2 border-t border-rule px-4 py-3">
                 <LangSwitch />
-                <Link
-                  to="/$lang/docs/$slug"
-                  params={{ lang, slug: 'install' }}
+                <a
+                  href={marketplaceUrl}
+                  target="_blank"
+                  rel="noreferrer"
                   onClick={() => setMenuOpen(false)}
                   className="ml-auto inline-flex h-9 items-center whitespace-nowrap rounded-[var(--radius-control)] bg-button px-3.5 text-sm font-semibold text-button-ink transition-colors hover:bg-button-hover"
                 >
                   {t.nav.install}
-                </Link>
+                </a>
               </div>
             </SheetContent>
           </Sheet>

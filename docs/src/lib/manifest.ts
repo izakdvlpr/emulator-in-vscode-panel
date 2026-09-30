@@ -16,6 +16,8 @@ const commandSchema = z.object({
 });
 
 const manifestSchema = z.object({
+  name: z.string(),
+  publisher: z.string(),
   version: z.string(),
   engines: z.object({ vscode: z.string() }),
   contributes: z.object({
