@@ -2,12 +2,21 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
-    "includes": ["**", "!dist", "!src/extension/android/generated"]
+    "includes": [
+      "**",
+      "!dist",
+      "!src/extension/android/generated",
+      "!docs/dist",
+      "!docs/src/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100
+  },
+  "css": {
+    "parser": { "tailwindDirectives": true }
   },
   "javascript": {
     "formatter": { "quoteStyle": "single", "semicolons": "always" }

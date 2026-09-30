@@ -1,0 +1,101 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Map / Diagram · theme: studied-DNA (source: webview da extensão = VS Code Light/Dark Modern)
+ * paper oklch(100% 0 0) / oklch(23.9% 0 0) · accent oklch(49.1% 0.16 255) / oklch(56.8% 0.167 251) · fonts: system UI + editor mono
+ * enrichment: hand-built diagram (Tier B) + real demo GIF · nav: N13 · footer: Ft2 · tone: technical
+ * Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V3
+ */
+
+/* Valores copiados dos temas Light Modern e Dark Modern do VS Code, os mesmos que a
+ * webview da extensão herda via --vscode-*. Comentários à direita = chave do tema. */
+:root {
+  color-scheme: light;
+
+  --color-paper: oklch(100% 0 0); /* editor.background */
+  --color-chrome: oklch(97.9% 0 0); /* titleBar / sideBar / statusBar */
+  --color-paper-2: oklch(96.1% 0 0); /* list.hoverBackground */
+  --color-paper-3: oklch(93.1% 0 0);
+  --color-ink: oklch(23.9% 0 0);
+  --color-ink-2: oklch(35.2% 0 0); /* foreground */
+  --color-muted: oklch(49.3% 0 0); /* descriptionForeground */
+  --color-rule: oklch(92.2% 0 0); /* widget.border */
+  --color-rule-2: oklch(85.1% 0 0); /* input.border */
+  --color-accent: oklch(49.1% 0.16 255); /* textLink.foreground */
+  --color-accent-soft: oklch(92.7% 0.015 278); /* list.inactiveSelectionBackground */
+  --color-focus: oklch(49.1% 0.16 255); /* focusBorder */
+  --color-button: oklch(49.1% 0.16 255); /* button.background */
+  --color-button-hover: oklch(46.4% 0.147 254); /* button.hoverBackground */
+  --color-button-ink: oklch(100% 0 0); /* button.foreground */
+  --color-graphite: oklch(97.9% 0 0); /* panel.background */
+  --color-graphite-2: oklch(100% 0 0);
+  --color-graphite-rule: oklch(92.2% 0 0);
+  --color-on-graphite: oklch(35.2% 0 0);
+  --color-on-graphite-muted: oklch(49.3% 0 0);
+  --color-accent-on-graphite: oklch(49.1% 0.16 255);
+  --color-ok: oklch(56.3% 0.146 143); /* testing.iconPassed */
+  --color-warn: oklch(55.9% 0.193 26); /* errorForeground */
+  --color-android: oklch(56.3% 0.146 143); /* charts.green */
+  --color-ios: oklch(62.8% 0.203 256); /* charts.blue */
+  --color-scrim: oklch(0% 0 0 / 0.3);
+
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, Ubuntu, "Droid Sans",
+    sans-serif;
+  --font-body: var(--font-display);
+  --font-code: ui-monospace, Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace;
+
+  --text-display: clamp(2rem, 2.6vw + 1rem, 3.25rem);
+  --text-display-s: clamp(1.75rem, 1.8vw + 1rem, 2.5rem);
+
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 5rem;
+
+  /* Mesmos raios da webview (--radius e menus). */
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --rule-hair: 1px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-reveal: 500ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-paper: oklch(23.9% 0 0);
+    --color-chrome: oklch(20.9% 0 0);
+    --color-paper-2: oklch(28.9% 0 0);
+    --color-paper-3: oklch(31.3% 0 0);
+    --color-ink: oklch(92.8% 0 0);
+    --color-ink-2: oklch(84.5% 0 0);
+    --color-muted: oklch(69.6% 0 0);
+    --color-rule: oklch(28.9% 0 0);
+    --color-rule-2: oklch(35.6% 0 0);
+    --color-accent: oklch(71.8% 0.149 248);
+    --color-accent-soft: oklch(33.4% 0.083 246); /* list.activeSelectionBackground */
+    --color-focus: oklch(56.8% 0.167 251);
+    --color-button: oklch(56.8% 0.167 251);
+    --color-button-hover: oklch(53.2% 0.154 251);
+    --color-button-ink: oklch(100% 0 0);
+    --color-graphite: oklch(20.9% 0 0);
+    --color-graphite-2: oklch(23.9% 0 0);
+    --color-graphite-rule: oklch(28.9% 0 0);
+    --color-on-graphite: oklch(84.5% 0 0);
+    --color-on-graphite-muted: oklch(69.6% 0 0);
+    --color-accent-on-graphite: oklch(71.8% 0.149 248);
+    --color-ok: oklch(76.7% 0.117 154);
+    --color-warn: oklch(66.5% 0.205 27);
+    --color-android: oklch(79.4% 0.128 143);
+    --color-ios: oklch(77.9% 0.119 247);
+    --color-scrim: oklch(0% 0 0 / 0.5);
+  }
+}

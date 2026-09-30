@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./tokens.css";
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-2: var(--color-paper-2);
+  --color-paper-3: var(--color-paper-3);
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-muted: var(--color-muted);
+  --color-rule: var(--color-rule);
+  --color-rule-2: var(--color-rule-2);
+  --color-accent-strong: var(--color-accent);
+  --color-chrome: var(--color-chrome);
+  --color-focus: var(--color-focus);
+  --color-button: var(--color-button);
+  --color-button-hover: var(--color-button-hover);
+  --color-button-ink: var(--color-button-ink);
+  --color-android: var(--color-android);
+  --color-ios: var(--color-ios);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-graphite: var(--color-graphite);
+  --color-graphite-2: var(--color-graphite-2);
+  --color-graphite-rule: var(--color-graphite-rule);
+  --color-on-graphite: var(--color-on-graphite);
+  --color-on-graphite-muted: var(--color-on-graphite-muted);
+  --color-accent-on-graphite: var(--color-accent-on-graphite);
+  --color-ok: var(--color-ok);
+  --color-warn: var(--color-warn);
+  --color-scrim: var(--color-scrim);
+
+  /* Nomes esperados pelos componentes do shadcn/ui */
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-popover: var(--color-paper);
+  --color-popover-foreground: var(--color-ink);
+  --color-card: var(--color-paper);
+  --color-card-foreground: var(--color-ink);
+  --color-primary: var(--color-button);
+  --color-primary-foreground: var(--color-button-ink);
+  --color-secondary: var(--color-paper-2);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted-foreground: var(--color-muted);
+  --color-accent: var(--color-accent-soft);
+  --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-warn);
+  --color-border: var(--color-rule);
+  --color-input: var(--color-rule-2);
+  --color-ring: var(--color-focus);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+
+  --text-display: var(--text-display);
+  --text-display-s: var(--text-display-s);
+
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-card);
+
+  --ease-out: var(--ease-out);
+  --ease-in: var(--ease-in);
+  --ease-in-out: var(--ease-in-out);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: var(--color-rule);
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink-2);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-focus);
+    outline-offset: 1px;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+}
+
+@layer utilities {
+  .reveal {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity var(--dur-reveal) var(--ease-out),
+        transform var(--dur-reveal) var(--ease-out);
+      transition-delay: calc(var(--reveal-step, 0) * 70ms);
+    }
+
+    .reveal.is-in {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
