@@ -136,6 +136,10 @@ final class VideoEncoder {
     VTSessionSetProperty(session, key: kVTCompressionPropertyKey_AllowFrameReordering, value: kCFBooleanFalse)
     VTSessionSetProperty(session, key: kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, value: 2 as CFNumber)
     VTSessionSetProperty(session, key: kVTCompressionPropertyKey_AverageBitRate, value: 4_000_000 as CFNumber)
+    // Só a média deixa o rate control borrar o texto num scroll, e a tela parada não manda frame
+    // que refine depois: o último frame borrado fica. O teto de QP segura a qualidade de cada
+    // frame; o custo é mais bytes durante movimento, o que não pesa num pipe local.
+    VTSessionSetProperty(session, key: kVTCompressionPropertyKey_MaxAllowedFrameQP, value: 28 as CFNumber)
     VTCompressionSessionPrepareToEncodeFrames(session)
   }
 

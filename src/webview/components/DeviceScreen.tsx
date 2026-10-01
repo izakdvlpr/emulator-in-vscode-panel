@@ -162,20 +162,40 @@ export function DeviceScreen({ tab }: { tab: TabState | undefined }) {
     const container = containerRef.current;
     if (!container) return;
     let timer: number | undefined;
-    const observer = new ResizeObserver(([entry]) => {
-      if (!entry) return;
-      const width = Math.round(entry.contentRect.width * window.devicePixelRatio);
-      const height = Math.round(entry.contentRect.height * window.devicePixelRatio);
+    let size: { width: number; height: number } | undefined;
+    const report = () => {
+      if (!size) return;
+      const width = Math.round(size.width * window.devicePixelRatio);
+      const height = Math.round(size.height * window.devicePixelRatio);
       window.clearTimeout(timer);
       if (width === 0 || height === 0) return;
       timer = window.setTimeout(
         () => postToHost({ type: 'viewport', width, height }),
         viewportDebounceMs,
       );
+    };
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      size = { width: entry.contentRect.width, height: entry.contentRect.height };
+      report();
     });
     observer.observe(container);
+    // A janela pode ir para um monitor de outra densidade sem mudar de tamanho em CSS: o
+    // ResizeObserver não dispara e o stream continuaria na resolução antiga, borrado.
+    let density: MediaQueryList | undefined;
+    const watchDensity = () => {
+      density?.removeEventListener('change', onDensityChange);
+      density = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+      density.addEventListener('change', onDensityChange);
+    };
+    const onDensityChange = () => {
+      watchDensity();
+      report();
+    };
+    watchDensity();
     return () => {
       observer.disconnect();
+      density?.removeEventListener('change', onDensityChange);
       window.clearTimeout(timer);
     };
   }, []);
