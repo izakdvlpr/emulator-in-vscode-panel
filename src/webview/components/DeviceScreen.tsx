@@ -38,7 +38,6 @@ interface Decoder {
   decoder: VideoDecoder;
   rotation: Rotation;
   waitingKey: boolean;
-  produced: boolean;
 }
 
 type VideoConfigMessage = Extract<HostToWebview, { type: 'videoConfig' }>;
@@ -51,6 +50,9 @@ export function DeviceScreen({ tab }: { tab: TabState | undefined }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const decoderRef = useRef<Decoder | undefined>(undefined);
+  // Um decoder novo (a cada `videoConfig`) que falha antes do 1º frame não prova que falta
+  // H.264: só conta como "sem suporte" se nenhum decoder desta webview chegou a produzir.
+  const decodedOnce = useRef(false);
   // Rotação da imagem que está na tela, para converter o toque.
   const rotationRef = useRef<Rotation>(0);
   const gesture = useRef<{ mirror: boolean } | undefined>(undefined);
@@ -84,20 +86,19 @@ export function DeviceScreen({ tab }: { tab: TabState | undefined }) {
               resizeCanvas(canvas, frame.displayWidth, frame.displayHeight);
               context.drawImage(frame, 0, 0);
               rotationRef.current = entry.rotation;
-              entry.produced = true;
+              decodedOnce.current = true;
             }
             frame.close();
           },
           error: () => {
             if (decoderRef.current !== entry) return;
             decoderRef.current = undefined;
-            // Falhar antes do primeiro frame indica codec não suportado, não um erro passageiro.
-            postToHost({ type: entry.produced ? 'videoReset' : 'videoUnsupported' });
+            // Falhar sem nunca ter decodificado nada indica codec não suportado, não um erro passageiro.
+            postToHost({ type: decodedOnce.current ? 'videoReset' : 'videoUnsupported' });
           },
         }),
         rotation: message.rotation,
         waitingKey: true,
-        produced: false,
       };
       decoderRef.current = entry;
       // Sem `description`: o stream é Annex B, com SPS/PPS dentro dos keyframes.

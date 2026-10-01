@@ -213,8 +213,9 @@ final class VideoEncoder {
           format, parameterSetIndex: index, parameterSetPointerOut: &pointer, parameterSetSizeOut: &size,
           parameterSetCountOut: nil, nalUnitHeaderLengthOut: nil)
         guard let pointer else { continue }
+        let parameterSet = Data(bytes: pointer, count: size)
         payload.append(contentsOf: startCode)
-        payload.append(pointer, count: size)
+        payload.append(H264.withoutReordering(sps: parameterSet) ?? parameterSet)
       }
     }
 
