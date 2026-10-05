@@ -1,6 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import * as vscode from 'vscode';
 import type {
+  BiometricAction,
   HardwareButton,
   KeyInput,
   RotateDirection,
@@ -12,7 +13,7 @@ import { AnnexBParser } from '../android/h264';
 import type { DeviceExit, DeviceSession, FrameEvent } from '../device/DeviceProvider';
 import type { HelperCommand, HelperProcess } from './helper';
 import { pasteKey, toHidKey } from './keys';
-import { isBooted, pbcopy, pbpaste, shutdown, simctlPath } from './simctl';
+import { isBooted, notifyDarwin, pbcopy, pbpaste, shutdown, simctlPath } from './simctl';
 
 // O shutdown de um simulador leva poucos segundos; o limite só cobre um CoreSimulator travado.
 const shutdownGraceMs = 30_000;
@@ -21,6 +22,11 @@ const clipboardRestartMs = 2000;
 
 // Notificação Darwin que o iOS publica a cada mudança no pasteboard geral.
 const pasteboardNotification = 'com.apple.pasteboard.notify.changed';
+
+// Notificações do BiometricKit do simulador, as mesmas do menu Features do Simulator.app.
+// `fingerTouch` é Touch ID e `pearl` é Face ID; o device ignora a do sensor que não tem.
+const biometricEnrollment = 'com.apple.BiometricKit.enrollmentChanged';
+const biometricSensors = ['fingerTouch', 'pearl'] as const;
 
 type ButtonCommand = Extract<HelperCommand, { cmd: 'button' }>['name'];
 
@@ -144,6 +150,19 @@ export class IosSession implements DeviceSession {
     this.rotation = ((this.rotation + (direction === 'left' ? 1 : 3)) % 4) as Rotation;
     const rotation = this.rotation;
     await this.enqueue(() => this.helper.send({ cmd: 'rotate', rotation }));
+  }
+
+  async biometric(action: BiometricAction): Promise<void> {
+    if (action === 'enroll') {
+      await notifyDarwin(this.udid, biometricEnrollment, 1);
+      return;
+    }
+    const result = action === 'match' ? 'match' : 'nomatch';
+    await Promise.all(
+      biometricSensors.map((sensor) =>
+        notifyDarwin(this.udid, `com.apple.BiometricKit_Sim.${sensor}.${result}`),
+      ),
+    );
   }
 
   screenshot(): Promise<Uint8Array> {

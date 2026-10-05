@@ -73,6 +73,12 @@ export const controls = defineDoc({
                 abre um diálogo para salvar o PNG.
               </li>
               <li>
+                Biometria: <Strong>Match</Strong> e <Strong>No match</Strong> simulam um toque no
+                sensor de digital (Android) ou Face ID/Touch ID (iOS). No Android, cadastre a
+                digital em Settings &gt; Security tocando em Match a cada passo; no iOS, use{' '}
+                <Strong>Enroll</Strong> antes.
+              </li>
+              <li>
                 <Strong>⟳</Strong> recarrega a lista de AVDs.
               </li>
             </List>
@@ -184,6 +190,12 @@ export const controls = defineDoc({
                 Control row: rotate left/right, volume −/+, power (<Strong>Lock</Strong> on iOS) and
                 screenshot. Screenshots are taken at full resolution and open a dialog to save the
                 PNG.
+              </li>
+              <li>
+                Biometrics: <Strong>Match</Strong> and <Strong>No match</Strong> simulate a touch on
+                the fingerprint sensor (Android) or Face ID/Touch ID (iOS). On Android, enroll the
+                fingerprint in Settings &gt; Security by pressing Match at each step; on iOS, press{' '}
+                <Strong>Enroll</Strong> first.
               </li>
               <li>
                 <Strong>⟳</Strong> reloads the AVD list.

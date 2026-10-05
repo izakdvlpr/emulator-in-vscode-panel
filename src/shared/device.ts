@@ -50,6 +50,11 @@ export type HardwareButton = z.infer<typeof hardwareButtonSchema>;
 export const rotateDirectionSchema = z.enum(['left', 'right']);
 export type RotateDirection = z.infer<typeof rotateDirectionSchema>;
 
+// `enroll` só existe no iOS: no Android o cadastro é feito pelo Settings, tocando o sensor com
+// `match`.
+export const biometricActionSchema = z.enum(['enroll', 'match', 'noMatch']);
+export type BiometricAction = z.infer<typeof biometricActionSchema>;
+
 export const touchPhaseSchema = z.enum(['down', 'move', 'up']);
 export type TouchPhase = z.infer<typeof touchPhaseSchema>;
 

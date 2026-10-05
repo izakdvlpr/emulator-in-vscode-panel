@@ -1,6 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
 import * as vscode from 'vscode';
 import type {
+  BiometricAction,
   HardwareButton,
   KeyInput,
   RotateDirection,
@@ -28,6 +29,10 @@ const heartbeatIntervalMs = 30_000;
 // letras é aplicado depois da letra seguinte. Com esse intervalo mínimo a ordem se mantém, e
 // digitação humana normal já é mais lenta que isso, então não adiciona latência perceptível.
 const minKeyIntervalMs = 40;
+
+// O "dedo" que o usuário cadastra pelo Settings tocando em Match; qualquer outro id não bate.
+const enrolledFingerId = 1;
+const unknownFingerId = 2;
 
 const skinRotations: Record<SkinRotation, Rotation> = {
   PORTRAIT: 0,
@@ -147,6 +152,17 @@ export class AndroidSession implements DeviceSession {
         deadline(),
         callback,
       ),
+    );
+  }
+
+  async biometric(action: BiometricAction): Promise<void> {
+    if (action === 'enroll') return;
+    const touchId = action === 'match' ? enrolledFingerId : unknownFingerId;
+    await call((callback) =>
+      this.client.sendFingerprint({ isTouching: true, touchId }, deadline(), callback),
+    );
+    await call((callback) =>
+      this.client.sendFingerprint({ isTouching: false, touchId }, deadline(), callback),
     );
   }
 

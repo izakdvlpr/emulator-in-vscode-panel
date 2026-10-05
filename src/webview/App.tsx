@@ -143,6 +143,7 @@ export function App() {
           platform={platform}
           onButton={(button) => postToHost({ type: 'button', button })}
           onRotate={(direction) => postToHost({ type: 'rotate', direction })}
+          onBiometric={(action) => postToHost({ type: 'biometric', action })}
           onScreenshot={() => postToHost({ type: 'screenshot' })}
         />
       </section>

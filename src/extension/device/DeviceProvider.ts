@@ -1,5 +1,6 @@
 import type * as vscode from 'vscode';
 import type {
+  BiometricAction,
   DeviceDescriptor,
   HardwareButton,
   KeyInput,
@@ -84,6 +85,8 @@ export interface DeviceSession {
   key(input: KeyInput): Promise<void>;
   pressButton(button: HardwareButton): Promise<void>;
   rotate(direction: RotateDirection): Promise<void>;
+  /** Simula digital/Face ID: cadastrar, reconhecer ou rejeitar. */
+  biometric(action: BiometricAction): Promise<void>;
   /** PNG na resolução real, na orientação atual. */
   screenshot(): Promise<Uint8Array>;
   /** Coloca o texto no clipboard do device e cola no campo focado. */

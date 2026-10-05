@@ -1,5 +1,10 @@
 import { Fragment } from 'react';
-import type { HardwareButton, Platform, RotateDirection } from '../../shared/device';
+import type {
+  BiometricAction,
+  HardwareButton,
+  Platform,
+  RotateDirection,
+} from '../../shared/device';
 import { Icon, type IconName } from './Icon';
 
 interface DeviceControlsProps {
@@ -7,6 +12,7 @@ interface DeviceControlsProps {
   platform: Platform;
   onButton: (button: HardwareButton) => void;
   onRotate: (direction: RotateDirection) => void;
+  onBiometric: (action: BiometricAction) => void;
   onScreenshot: () => void;
 }
 
@@ -14,6 +20,8 @@ interface Control {
   label: string;
   icon: IconName;
   action: (props: DeviceControlsProps) => void;
+  /** Sem valor, aparece nas duas plataformas. */
+  platform?: Platform;
 }
 
 const groups: Control[][] = [
@@ -28,6 +36,24 @@ const groups: Control[][] = [
       action: ({ onButton }) => onButton('volumeDown'),
     },
     { label: 'Volume up', icon: 'volumeUp', action: ({ onButton }) => onButton('volumeUp') },
+  ],
+  [
+    {
+      label: 'Enroll biometrics',
+      icon: 'fingerprintAdd',
+      action: ({ onBiometric }) => onBiometric('enroll'),
+      platform: 'ios',
+    },
+    {
+      label: 'Biometric match',
+      icon: 'fingerprint',
+      action: ({ onBiometric }) => onBiometric('match'),
+    },
+    {
+      label: 'Biometric no match',
+      icon: 'fingerprintOff',
+      action: ({ onBiometric }) => onBiometric('noMatch'),
+    },
   ],
   [
     { label: 'Power', icon: 'power', action: ({ onButton }) => onButton('power') },
@@ -50,6 +76,7 @@ export function DeviceControls(props: DeviceControlsProps) {
         <Fragment key={index}>
           {index > 0 && <span className="controls__divider" aria-hidden="true" />}
           {group.map((control) => {
+            if (control.platform && control.platform !== props.platform) return null;
             const { label, icon } = presentation(control, props.platform);
             return (
               <button

@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react';
 import type { Platform } from '../../shared/device';
 
+const fingerprint = (
+  <path d="M5 9a8 8 0 0 1 14 0M7.5 18.5A9 9 0 0 1 6 13a6 6 0 0 1 12 0v1M9.5 20a12 12 0 0 1-1-7a3.5 3.5 0 0 1 7 0a14 14 0 0 1-.8 5.5M12 13v1.5a11 11 0 0 0 1 4.5" />
+);
+
 const paths = {
   play: <path d="M8 5.5v13l10-6.5z" />,
   stop: <rect x="6.5" y="6.5" width="11" height="11" rx="2" />,
@@ -40,6 +44,19 @@ const paths = {
     <>
       <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
       <circle cx="12" cy="13" r="3.5" />
+    </>
+  ),
+  fingerprint,
+  fingerprintOff: (
+    <>
+      {fingerprint}
+      <path d="M4 4l16 16" />
+    </>
+  ),
+  fingerprintAdd: (
+    <>
+      <g transform="translate(-1 -1) scale(.82)">{fingerprint}</g>
+      <path d="M19 15v6M16 18h6" />
     </>
   ),
   alert: <path d="M12 4l9 16H3zM12 10v4M12 17v.01" />,

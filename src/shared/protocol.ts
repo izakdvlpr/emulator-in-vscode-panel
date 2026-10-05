@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  biometricActionSchema,
   type DeviceDescriptor,
   hardwareButtonSchema,
   type PanelState,
@@ -38,6 +39,7 @@ export const webviewToHostSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('key'), key: z.string().min(1), text: z.string().min(1).optional() }),
   z.object({ type: z.literal('button'), button: hardwareButtonSchema }),
   z.object({ type: z.literal('rotate'), direction: rotateDirectionSchema }),
+  z.object({ type: z.literal('biometric'), action: biometricActionSchema }),
   z.object({ type: z.literal('screenshot') }),
   z.object({ type: z.literal('paste') }),
 ]);

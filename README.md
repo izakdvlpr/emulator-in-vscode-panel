@@ -53,6 +53,6 @@ bun run install:local   # build + .vsix + install into VS Code
 - [iOS Simulator](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/ios): The Swift helper, Xcode private frameworks and the same video path as Android.
 - [Shutdown](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/shutdown): Stop, Detach, closing the window and what happens if the extension host dies.
 - [Known limitations](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/limitations): What does not work yet and where behaviour comes from Android or Xcode.
-- [Roadmap](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/roadmap): What landed in phases 2 and 3 and what was dropped.
+- [Roadmap](https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/roadmap): What landed in phases 2 and 3, what was dropped and what comes next.
 
 </samp>

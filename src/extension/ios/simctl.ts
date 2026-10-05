@@ -126,3 +126,11 @@ export async function pbcopy(udid: string, text: string): Promise<void> {
 export async function pbpaste(udid: string): Promise<string> {
   return simctl(['pbpaste', udid]);
 }
+
+/** Posta uma notificação Darwin dentro do simulador, gravando `state` antes quando vier. */
+export async function notifyDarwin(udid: string, name: string, state?: number): Promise<void> {
+  if (state !== undefined) {
+    await simctl(['spawn', udid, 'notifyutil', '-s', name, String(state)]);
+  }
+  await simctl(['spawn', udid, 'notifyutil', '-p', name]);
+}

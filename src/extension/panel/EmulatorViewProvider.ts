@@ -216,6 +216,11 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
           this.output.appendLine(`[rotate failed] ${errorMessage(error)}`);
         });
         return;
+      case 'biometric':
+        void session?.biometric(message.action).catch((error: unknown) => {
+          this.output.appendLine(`[biometric failed] ${errorMessage(error)}`);
+        });
+        return;
       case 'screenshot':
         void this.saveScreenshot();
         return;
