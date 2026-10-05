@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useLocale, useMessages } from '@/i18n/useLocale';
-import { marketplaceUrl, repositoryUrl } from '@/lib/site';
+import { marketplaceUrl, releasesUrl, repositoryUrl } from '@/lib/site';
 import { Kbd } from '../docs/prose';
 import { DocsSidebar } from './DocsSidebar';
 import { GithubMark } from './GithubMark';
@@ -55,6 +55,14 @@ export function SiteNav() {
           >
             {t.nav.docs}
           </Link>
+          <a
+            href={releasesUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden h-9 items-center whitespace-nowrap rounded-[var(--radius-control)] px-3 text-sm font-medium text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink lg:inline-flex"
+          >
+            {t.nav.changelog}
+          </a>
           <a
             href={repositoryUrl}
             target="_blank"

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useLocale, useMessages } from '@/i18n/useLocale';
 import { manifest } from '@/lib/manifest';
-import { repositoryUrl } from '@/lib/site';
+import { author, releasesUrl, repositoryUrl } from '@/lib/site';
 import { LangSwitch } from './LangSwitch';
 
 export function SiteFooter() {
@@ -28,6 +28,25 @@ export function SiteFooter() {
         >
           {t.footer.source}
         </a>
+        <a
+          href={releasesUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="whitespace-nowrap hover:text-ink"
+        >
+          {t.nav.changelog}
+        </a>
+        <span className="whitespace-nowrap">
+          {t.footer.createdBy}{' '}
+          <a
+            href={author.url}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-ink-2 hover:text-ink"
+          >
+            {author.name}
+          </a>
+        </span>
         <LangSwitch className="ml-auto -mr-2.5" />
       </div>
     </footer>

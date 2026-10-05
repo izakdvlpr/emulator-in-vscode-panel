@@ -9,6 +9,7 @@ export interface Messages {
   nav: {
     docs: string;
     install: string;
+    changelog: string;
     github: string;
     menu: string;
     home: string;
@@ -43,6 +44,7 @@ export interface Messages {
   footer: {
     license: string;
     source: string;
+    createdBy: string;
   };
 }
 
@@ -55,6 +57,7 @@ export const messages: Record<Locale, Messages> = {
     nav: {
       docs: 'Docs',
       install: 'Instalar',
+      changelog: 'Changelog',
       github: 'GitHub',
       menu: 'Abrir navegação',
       home: 'Início',
@@ -94,6 +97,7 @@ export const messages: Record<Locale, Messages> = {
     footer: {
       license: 'Licença MIT',
       source: 'Código no GitHub',
+      createdBy: 'Criado por',
     },
   },
   en: {
@@ -104,6 +108,7 @@ export const messages: Record<Locale, Messages> = {
     nav: {
       docs: 'Docs',
       install: 'Install',
+      changelog: 'Changelog',
       github: 'GitHub',
       menu: 'Open navigation',
       home: 'Home',
@@ -143,6 +148,7 @@ export const messages: Record<Locale, Messages> = {
     footer: {
       license: 'MIT license',
       source: 'Source on GitHub',
+      createdBy: 'Created by',
     },
   },
 };
