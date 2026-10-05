@@ -43,6 +43,26 @@ export interface VideoChunk {
 
 export type FrameEvent = RgbaFrame | VideoConfig | VideoChunk;
 
+export type LogLevel = 'verbose' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+
+export interface LogEntry {
+  /** Horário do device, já no formato do logcat (`MM-DD HH:mm:ss.SSS`). */
+  time: string;
+  level: LogLevel;
+  pid: number;
+  tid: number;
+  /** Tag do logcat; no iOS, o processo e o subsystem. */
+  tag: string;
+  message: string;
+}
+
+/** App instalado pelo usuário, oferecido como filtro dos logs. */
+export interface InstalledApp {
+  /** Package no Android, bundle id no iOS. */
+  id: string;
+  name: string;
+}
+
 export interface DeviceExit {
   code: number | null;
   reason: string;
@@ -91,6 +111,16 @@ export interface DeviceSession {
   screenshot(): Promise<Uint8Array>;
   /** Coloca o texto no clipboard do device e cola no campo focado. */
   paste(text: string): Promise<void>;
+  listApps(): Promise<InstalledApp[]>;
+  /**
+   * Logs do device a partir de agora, em lotes. Com `appId`, só os processos do app, inclusive
+   * os que ele abrir depois. Falhas vão para `onError`; o stream segue tentando enquanto viver.
+   */
+  streamLogs(
+    appId: string | undefined,
+    onEntries: (entries: LogEntry[]) => void,
+    onError: (message: string) => void,
+  ): vscode.Disposable;
   /** Encerra (ou desconecta) o device. `fast` encurta os timeouts (usado no deactivate). */
   dispose(options?: { fast?: boolean }): Promise<void>;
 }

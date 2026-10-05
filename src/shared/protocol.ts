@@ -42,6 +42,7 @@ export const webviewToHostSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('biometric'), action: biometricActionSchema }),
   z.object({ type: z.literal('screenshot') }),
   z.object({ type: z.literal('paste') }),
+  z.object({ type: z.literal('logs') }),
 ]);
 
 export type WebviewToHost = z.infer<typeof webviewToHostSchema>;

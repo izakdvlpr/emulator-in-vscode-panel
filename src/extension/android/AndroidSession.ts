@@ -9,8 +9,14 @@ import type {
   ScreenSize,
   TouchInput,
 } from '../../shared/device';
-import type { DeviceExit, DeviceSession, FrameEvent } from '../device/DeviceProvider';
-import type { Adb } from './adb';
+import type {
+  DeviceExit,
+  DeviceSession,
+  FrameEvent,
+  InstalledApp,
+  LogEntry,
+} from '../device/DeviceProvider';
+import { type Adb, adbShell } from './adb';
 import type { ClipData__Output } from './generated/android/emulation/control/ClipData';
 import type { Image__Output } from './generated/android/emulation/control/Image';
 import type { KeyboardEvent } from './generated/android/emulation/control/KeyboardEvent';
@@ -19,6 +25,7 @@ import type { Touch } from './generated/android/emulation/control/Touch';
 import { call, deadline, type EmulatorControllerClient } from './grpcClient';
 import { pasteKeyEvent, toEmulatorButtonEvent, toEmulatorKeyEvent } from './keys';
 import type { SessionLifecycle } from './lifecycle';
+import { LogcatStream } from './logcat';
 import { VideoStream } from './videoStream';
 
 // Mantém o `-idle-grpc-timeout` satisfeito mesmo com a tela parada (o stream só
@@ -60,6 +67,7 @@ export class AndroidSession implements DeviceSession {
   readonly onDidChangeClipboard = this.clipboardEmitter.event;
 
   private readonly activeStreams = new Set<ActiveStream>();
+  private readonly logStreams = new Set<LogcatStream>();
   private readonly heartbeat: NodeJS.Timeout;
   private clipboardStream: grpc.ClientReadableStream<ClipData__Output> | undefined;
   private lastClipboard = '';
@@ -181,6 +189,33 @@ export class AndroidSession implements DeviceSession {
     });
   }
 
+  async listApps(): Promise<InstalledApp[]> {
+    if (!this.adb) return [];
+    // `-3`: só os instalados pelo usuário, sem os do sistema.
+    const output = await adbShell(this.adb, 'pm list packages -3', { timeoutMs: 15_000 });
+    return output
+      .split(/\r?\n/)
+      .map((line) => line.trim().replace(/^package:/, ''))
+      .filter((id) => id.length > 0)
+      .sort()
+      .map((id) => ({ id, name: id }));
+  }
+
+  streamLogs(
+    appId: string | undefined,
+    onEntries: (entries: LogEntry[]) => void,
+    onError: (message: string) => void,
+  ): vscode.Disposable {
+    // O seletor de app pode ter ficado aberto enquanto o device saía.
+    if (this.disposed || this.released) return new vscode.Disposable(() => {});
+    const stream = new LogcatStream(this.client, this.adb, appId, onEntries, onError);
+    this.logStreams.add(stream);
+    return new vscode.Disposable(() => {
+      this.logStreams.delete(stream);
+      stream.dispose();
+    });
+  }
+
   dispose({ fast = false }: { fast?: boolean } = {}): Promise<void> {
     if (this.disposing) {
       // Já está encerrando no modo lento e agora não há mais tempo (ex.: deactivate).
@@ -205,6 +240,8 @@ export class AndroidSession implements DeviceSession {
     clearInterval(this.heartbeat);
     for (const stream of this.activeStreams) stopStream(stream);
     this.activeStreams.clear();
+    for (const stream of this.logStreams) stream.dispose();
+    this.logStreams.clear();
     this.clipboardStream?.cancel();
     this.clipboardStream = undefined;
   }

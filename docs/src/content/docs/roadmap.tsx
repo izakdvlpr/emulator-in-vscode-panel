@@ -181,12 +181,13 @@ const vscodeIntegration: Record<Locale, readonly Item[]> = {
 const devTools: Record<Locale, readonly Item[]> = {
   pt: [
     {
-      status: 'planned',
+      status: 'done',
       title: 'Logs do device',
       detail: (
         <>
-          Logcat (<Code>streamLogcat</Code>) e <Code>log stream</Code> do simulador num output
-          channel, com filtro por app.
+          Logcat e <Code>log stream</Code> do simulador num output channel, com filtro por app. O
+          logcat vem do <Code>adb logcat</Code>: o <Code>streamLogcat</Code> do emulador 36.x para
+          de entregar linhas ao abrir um app.
         </>
       ),
     },
@@ -277,12 +278,13 @@ const devTools: Record<Locale, readonly Item[]> = {
   ],
   en: [
     {
-      status: 'planned',
+      status: 'done',
       title: 'Device logs',
       detail: (
         <>
-          Logcat (<Code>streamLogcat</Code>) and the simulator's <Code>log stream</Code> in an
-          output channel, filtered by app.
+          Logcat and the simulator's <Code>log stream</Code> in an output channel, filtered by app.
+          Logcat comes from <Code>adb logcat</Code>: emulator 36.x's <Code>streamLogcat</Code>
+          stops delivering lines when an app opens.
         </>
       ),
     },

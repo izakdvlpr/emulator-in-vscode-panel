@@ -59,6 +59,7 @@ const paths = {
       <path d="M19 15v6M16 18h6" />
     </>
   ),
+  logs: <path d="M4 6h16M4 10h16M4 14h10M4 18h7" />,
   alert: <path d="M12 4l9 16H3zM12 10v4M12 17v.01" />,
   phone: (
     <>

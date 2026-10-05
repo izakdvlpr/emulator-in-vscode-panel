@@ -10,10 +10,17 @@ import type {
   TouchInput,
 } from '../../shared/device';
 import { AnnexBParser } from '../android/h264';
-import type { DeviceExit, DeviceSession, FrameEvent } from '../device/DeviceProvider';
+import type {
+  DeviceExit,
+  DeviceSession,
+  FrameEvent,
+  InstalledApp,
+  LogEntry,
+} from '../device/DeviceProvider';
 import type { HelperCommand, HelperProcess } from './helper';
 import { pasteKey, toHidKey } from './keys';
-import { isBooted, notifyDarwin, pbcopy, pbpaste, shutdown, simctlPath } from './simctl';
+import { IosLogStream } from './logStream';
+import { isBooted, listApps, notifyDarwin, pbcopy, pbpaste, shutdown, simctlPath } from './simctl';
 
 // O shutdown de um simulador leva poucos segundos; o limite só cobre um CoreSimulator travado.
 const shutdownGraceMs = 30_000;
@@ -56,6 +63,7 @@ export class IosSession implements DeviceSession {
   private readonly subscriptions: vscode.Disposable[];
   // O helper tem um encoder só: um stream novo substitui o anterior.
   private stream: ActiveStream | undefined;
+  private readonly logStreams = new Set<IosLogStream>();
   private rotation: Rotation = 0;
   private clipboardWatcher: ChildProcess | undefined;
   private clipboardRestart: NodeJS.Timeout | undefined;
@@ -178,6 +186,26 @@ export class IosSession implements DeviceSession {
     });
   }
 
+  async listApps(): Promise<InstalledApp[]> {
+    const apps = await listApps(this.udid);
+    return apps.map(({ id, name }) => ({ id, name }));
+  }
+
+  streamLogs(
+    appId: string | undefined,
+    onEntries: (entries: LogEntry[]) => void,
+    onError: (message: string) => void,
+  ): vscode.Disposable {
+    // O seletor de app pode ter ficado aberto enquanto o device saía.
+    if (this.disposed || this.released) return new vscode.Disposable(() => {});
+    const stream = new IosLogStream(this.udid, appId, onEntries, onError);
+    this.logStreams.add(stream);
+    return new vscode.Disposable(() => {
+      this.logStreams.delete(stream);
+      stream.dispose();
+    });
+  }
+
   dispose({ fast = false }: { fast?: boolean } = {}): Promise<void> {
     if (this.disposing) return this.disposing;
     this.disposed = true;
@@ -213,6 +241,8 @@ export class IosSession implements DeviceSession {
   private stopActivity(): void {
     if (this.stream) this.helper.send({ cmd: 'stopStream' });
     this.stream = undefined;
+    for (const stream of this.logStreams) stream.dispose();
+    this.logStreams.clear();
     clearTimeout(this.clipboardRestart);
     this.clipboardWatcher?.kill();
     this.clipboardWatcher = undefined;

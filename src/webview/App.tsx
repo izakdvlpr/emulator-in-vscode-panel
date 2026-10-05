@@ -145,6 +145,7 @@ export function App() {
           onRotate={(direction) => postToHost({ type: 'rotate', direction })}
           onBiometric={(action) => postToHost({ type: 'biometric', action })}
           onScreenshot={() => postToHost({ type: 'screenshot' })}
+          onLogs={() => postToHost({ type: 'logs' })}
         />
       </section>
     </main>

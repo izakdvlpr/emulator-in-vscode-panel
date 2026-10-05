@@ -6,6 +6,7 @@ import type { KeyInput, ScreenSize, TabState } from '../../shared/device';
 import { type HostToWebview, type WebviewToHost, webviewToHostSchema } from '../../shared/protocol';
 import { readConfig } from '../config';
 import type { DeviceCatalog, DeviceSession, FrameEvent, RgbaFrame } from '../device/DeviceProvider';
+import type { DeviceLogs } from './DeviceLogs';
 import {
   appOptions,
   fromPanel,
@@ -45,6 +46,8 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   // A ordem de inserção é a ordem das abas.
   private readonly tabs = new Map<string, Tab>();
   private activeId: string | undefined;
+  // Nomes da última listagem, para o título do output channel de logs.
+  private readonly deviceNames = new Map<string, string>();
 
   private frameStream: vscode.Disposable | undefined;
   private streamedDeviceId: string | undefined;
@@ -56,6 +59,7 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   constructor(
     private readonly extensionUri: vscode.Uri,
     private readonly provider: DeviceCatalog,
+    private readonly logs: DeviceLogs,
     private readonly output: vscode.OutputChannel,
   ) {}
 
@@ -100,6 +104,29 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
   async moveToSidebar(): Promise<void> {
     this.editor?.dispose();
     await vscode.commands.executeCommand(`${EmulatorViewProvider.viewId}.focus`);
+  }
+
+  /** Logs do device da aba ativa, com o filtro de app escolhido na hora. */
+  async showLogs(): Promise<void> {
+    const tab = this.activeTab();
+    const session = tab?.session;
+    if (!tab || !session) {
+      void vscode.window.showInformationMessage('Start a device to see its logs.');
+      return;
+    }
+    try {
+      await this.logs.open(
+        tab.deviceId,
+        this.deviceNames.get(tab.deviceId) ?? tab.deviceId,
+        session,
+      );
+    } catch (error) {
+      void vscode.window.showErrorMessage(`Could not show the device logs: ${errorMessage(error)}`);
+    }
+  }
+
+  stopLogs(): void {
+    if (this.activeId !== undefined) this.logs.stop(this.activeId);
   }
 
   /** Mostra o app onde ele estiver. */
@@ -227,6 +254,9 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
       case 'paste':
         void this.paste();
         return;
+      case 'logs':
+        void this.showLogs();
+        return;
     }
   }
 
@@ -247,7 +277,9 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
 
   private async refreshDevices(): Promise<void> {
     try {
-      this.post({ type: 'devices', devices: await this.provider.listDevices() });
+      const devices = await this.provider.listDevices();
+      for (const device of devices) this.deviceNames.set(device.id, device.name);
+      this.post({ type: 'devices', devices });
     } catch (error) {
       this.post({ type: 'devices', devices: [], error: errorMessage(error) });
     }
@@ -295,6 +327,7 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
       session.onDidExit(({ reason }) => {
         if (tab.session !== session) return;
         tab.session = undefined;
+        this.logs.stop(deviceId);
         this.setTabState(tab, { kind: 'error', deviceId, message: `Device exited: ${reason}` });
         if (this.activeId === deviceId) this.restartFrameStream();
         void this.refreshDevices();
@@ -393,6 +426,7 @@ export class EmulatorViewProvider implements vscode.WebviewViewProvider {
 
     const session = tab.session;
     tab.session = undefined;
+    this.logs.stop(tab.deviceId);
     const done = Promise.all([tab.starting, session?.dispose(options)]).then(
       () => {},
       (error: unknown) => {

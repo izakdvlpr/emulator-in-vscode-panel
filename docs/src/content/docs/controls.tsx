@@ -11,6 +11,8 @@ const commandPlaces: Record<Locale, Record<CommandId, string>> = {
     'emulatorPanel.openInNewWindow': 'Barra de título da view, quando o device está na sidebar.',
     'emulatorPanel.moveToSidebar':
       'Barra da aba de editor e Command Palette, quando o device está numa aba.',
+    'emulatorPanel.showLogs': 'Linha de controles e Command Palette.',
+    'emulatorPanel.stopLogs': 'Command Palette, ou Stop logs no seletor de app.',
   },
   en: {
     'emulatorPanel.open': 'Command Palette.',
@@ -19,6 +21,8 @@ const commandPlaces: Record<Locale, Record<CommandId, string>> = {
     'emulatorPanel.openInNewWindow': 'View title bar, while the device is in the sidebar.',
     'emulatorPanel.moveToSidebar':
       'Editor tab bar and Command Palette, while the device is in a tab.',
+    'emulatorPanel.showLogs': 'Control row and Command Palette.',
+    'emulatorPanel.stopLogs': 'Command Palette, or Stop logs in the app picker.',
   },
 };
 
@@ -80,6 +84,34 @@ export const controls = defineDoc({
               </li>
               <li>
                 <Strong>⟳</Strong> recarrega a lista de AVDs.
+              </li>
+            </List>
+          ),
+        },
+        {
+          id: 'logs',
+          title: 'Logs do device',
+          body: (
+            <List>
+              <li>
+                O botão de logs na linha de controles (ou <Code>Emulator: Show Device Logs</Code>)
+                pergunta de qual app mostrar os logs do device da aba ativa: um dos apps instalados,
+                outro package/bundle id digitado, ou todos os processos.
+              </li>
+              <li>
+                Os logs vão para o output channel <Code>Emulator Logs: &lt;device&gt;</Code> no
+                formato do <Code>logcat -v threadtime</Code>, a partir do momento em que começam. No
+                Android vêm do <Code>adb logcat</Code>; no iOS, do <Code>log stream</Code> do
+                simulador.
+              </li>
+              <li>
+                Com filtro, o app é acompanhado mesmo se reiniciar: no Android pelos processos do
+                package (inclusive <Code>pacote:servico</Code>), no iOS pelo processo do app, já com
+                o nível debug. Sem filtro, o iOS mostra só os níveis default, error e fault.
+              </li>
+              <li>
+                Abrir de novo troca o filtro; <Strong>Stop logs</Strong> para o stream e mantém o
+                que já chegou.
               </li>
             </List>
           ),
@@ -199,6 +231,35 @@ export const controls = defineDoc({
               </li>
               <li>
                 <Strong>⟳</Strong> reloads the AVD list.
+              </li>
+            </List>
+          ),
+        },
+        {
+          id: 'logs',
+          title: 'Device logs',
+          body: (
+            <List>
+              <li>
+                The logs button in the control row (or <Code>Emulator: Show Device Logs</Code>) asks
+                which app to show logs for on the active tab's device: one of the installed apps,
+                another package/bundle id typed in, or all processes.
+              </li>
+              <li>
+                Logs go to the <Code>Emulator Logs: &lt;device&gt;</Code> output channel in{' '}
+                <Code>logcat -v threadtime</Code> format, starting from the moment they are opened.
+                On Android they come from <Code>adb logcat</Code>; on iOS, from the simulator's{' '}
+                <Code>log stream</Code>.
+              </li>
+              <li>
+                With a filter, the app is followed even when it restarts: on Android through the
+                package's processes (including <Code>package:service</Code>), on iOS through the
+                app's process, at debug level. Without a filter, iOS only shows the default, error
+                and fault levels.
+              </li>
+              <li>
+                Opening it again changes the filter; <Strong>Stop logs</Strong> stops the stream and
+                keeps what has already arrived.
               </li>
             </List>
           ),

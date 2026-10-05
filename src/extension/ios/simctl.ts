@@ -134,3 +134,47 @@ export async function notifyDarwin(udid: string, name: string, state?: number): 
   }
   await simctl(['spawn', udid, 'notifyutil', '-p', name]);
 }
+
+const appListSchema = z.record(
+  z.string(),
+  z.object({
+    CFBundleIdentifier: z.string(),
+    CFBundleExecutable: z.string().optional(),
+    CFBundleDisplayName: z.string().optional(),
+    CFBundleName: z.string().optional(),
+    ApplicationType: z.string().optional(),
+  }),
+);
+
+export interface SimulatorApp {
+  id: string;
+  name: string;
+  /** Nome do processo do app, usado no predicate do `log stream`. */
+  executable: string;
+}
+
+/** Apps instalados pelo usuário, sem os do sistema. */
+export async function listApps(udid: string): Promise<SimulatorApp[]> {
+  // O `listapps` só sabe imprimir plist no formato antigo do NeXTSTEP.
+  const apps = appListSchema.parse(JSON.parse(await plistToJson(await simctl(['listapps', udid]))));
+  return Object.values(apps)
+    .filter((app) => app.ApplicationType === 'User' && app.CFBundleExecutable)
+    .map((app) => ({
+      id: app.CFBundleIdentifier,
+      name: app.CFBundleDisplayName ?? app.CFBundleName ?? app.CFBundleIdentifier,
+      executable: app.CFBundleExecutable ?? '',
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function plistToJson(plist: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const child = execFile(
+      'plutil',
+      ['-convert', 'json', '-o', '-', '-'],
+      { timeout: commandTimeoutMs, maxBuffer: 16 * 1024 * 1024 },
+      (error, stdout) => (error ? reject(error) : resolve(stdout)),
+    );
+    child.stdin?.end(plist);
+  });
+}

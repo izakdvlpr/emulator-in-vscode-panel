@@ -14,6 +14,7 @@ interface DeviceControlsProps {
   onRotate: (direction: RotateDirection) => void;
   onBiometric: (action: BiometricAction) => void;
   onScreenshot: () => void;
+  onLogs: () => void;
 }
 
 interface Control {
@@ -58,6 +59,7 @@ const groups: Control[][] = [
   [
     { label: 'Power', icon: 'power', action: ({ onButton }) => onButton('power') },
     { label: 'Take screenshot', icon: 'camera', action: ({ onScreenshot }) => onScreenshot() },
+    { label: 'Show logs', icon: 'logs', action: ({ onLogs }) => onLogs() },
   ],
 ];
 
