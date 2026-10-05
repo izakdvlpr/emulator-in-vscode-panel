@@ -11,6 +11,11 @@
 </h4>
 
 <p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://raw.githubusercontent.com/izakdvlpr/emulator-in-vscode-panel/main/media/marketplace-badge.png" height="56" alt="Download on the VS Code Marketplace"></a>
+  <a href="https://open-vsx.org/extension/izakdvlpr/vscode-emulator-panel"><img src="https://raw.githubusercontent.com/izakdvlpr/emulator-in-vscode-panel/main/media/openvsx-badge.png" height="56" alt="Download on the Open VSX Registry"></a>
+</p>
+
+<p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://img.shields.io/badge/Marketplace-75beff?&style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwMzE1ZiI+PHJlY3QgeD0iMiIgeT0iNyIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIyIiB5PSIxNSIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIxMCIgeT0iMTUiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIi8+PHJlY3QgeD0iMTMiIHk9IjIiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSAxNi41IDUuNSkiLz48L3N2Zz4K"></a>
   <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/"><img src="https://img.shields.io/badge/Documentation-75beff?&style=for-the-badge&logo=readthedocs&logoColor=00315f"></a>
   <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel"><img src="https://img.shields.io/badge/Github-75beff?&style=for-the-badge&logo=github&logoColor=00315f"></a>

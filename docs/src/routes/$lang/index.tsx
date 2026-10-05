@@ -2,13 +2,14 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 import { CodeBlock } from '@/components/docs/CodeBlock';
 import { PipelineMap } from '@/components/home/PipelineMap';
+import { MarketplaceBadge } from '@/components/site/MarketplaceBadge';
 import { docsByGroup } from '@/content/docs';
 import { home } from '@/content/home';
 import { localeSchema } from '@/i18n/locales';
 import { messages } from '@/i18n/messages';
 import { useLocale, useMessages } from '@/i18n/useLocale';
 import { manifest } from '@/lib/manifest';
-import { extensionId, marketplaceUrl } from '@/lib/site';
+import { extensionId } from '@/lib/site';
 
 const quickStartCode = `code --install-extension ${extensionId}`;
 
@@ -42,14 +43,10 @@ function Home() {
             </h1>
             <p className="mt-6 max-w-[60ch] text-lg leading-8 text-ink-2">{content.lede}</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <a
-                href={marketplaceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-11 items-center whitespace-nowrap rounded-[var(--radius-control)] bg-button px-5 text-[0.95rem] font-semibold text-button-ink transition-colors hover:bg-button-hover active:translate-y-px"
-              >
-                {content.primaryCta}
-              </a>
+              <div className="flex flex-wrap gap-3">
+                <MarketplaceBadge store="vscode" />
+                <MarketplaceBadge store="openvsx" />
+              </div>
               <Link
                 to="/$lang/docs/$slug"
                 params={{ lang, slug: 'architecture' }}
@@ -102,17 +99,23 @@ function Home() {
             <h2 className="text-3xl font-semibold text-on-graphite">{content.quickStart.title}</h2>
             <p className="mt-4 leading-7 text-on-graphite-muted">{content.quickStart.lede}</p>
             <p className="mt-3 leading-7 text-on-graphite-muted">{content.quickStart.after}</p>
-            <Link
-              to="/$lang/docs/$slug"
-              params={{ lang, slug: 'requirements' }}
-              className="group mt-6 inline-flex items-center gap-1.5 font-medium whitespace-nowrap text-accent-on-graphite"
-            >
-              {content.quickStart.requirementsLink}
-              <ArrowRight
-                className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Link>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <div className="flex flex-wrap gap-3">
+                <MarketplaceBadge store="vscode" />
+                <MarketplaceBadge store="openvsx" />
+              </div>
+              <Link
+                to="/$lang/docs/$slug"
+                params={{ lang, slug: 'requirements' }}
+                className="group inline-flex items-center gap-1.5 font-medium whitespace-nowrap text-accent-on-graphite"
+              >
+                {content.quickStart.requirementsLink}
+                <ArrowRight
+                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
+            </div>
           </div>
           <CodeBlock label="terminal" code={quickStartCode} tone="graphite" className="mt-0" />
         </div>

@@ -11,7 +11,6 @@ export interface MapNode {
 export interface HomeContent {
   title: string;
   lede: string;
-  primaryCta: string;
   secondaryCta: string;
   demoAlt: string;
   map: {
@@ -46,7 +45,6 @@ export const home: Record<Locale, HomeContent> = {
   pt: {
     title: 'Android Emulator e iOS Simulator dentro do VS Code.',
     lede: 'A tela do device roda numa view do editor, com toque, pinch, teclado, clipboard e rotação. Sem janela extra, sem Android Studio aberto.',
-    primaryCta: 'Instalar',
     secondaryCta: 'Como funciona',
     demoAlt:
       'Painel Emulator: Device no VS Code, escolhendo o Pixel 10, iniciando o emulador e usando a tela do device.',
@@ -117,7 +115,6 @@ export const home: Record<Locale, HomeContent> = {
   en: {
     title: 'Android Emulator and iOS Simulator inside VS Code.',
     lede: 'The device screen runs in an editor view, with touch, pinch, keyboard, clipboard and rotation. No extra window, no Android Studio open.',
-    primaryCta: 'Install',
     secondaryCta: 'How it works',
     demoAlt:
       'Emulator: Device panel in VS Code, picking the Pixel 10, starting the emulator and using the device screen.',
