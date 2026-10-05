@@ -2,7 +2,7 @@
   "name": "vscode-emulator-panel",
   "displayName": "Emulator in VS Code Panel",
   "description": "Run and control the Android Emulator and the iOS Simulator inside a VS Code panel.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "izakdvlpr",
   "license": "MIT",
   "icon": "media/icon.png",
