@@ -148,7 +148,7 @@ function NeighborLink({
       to="/$lang/docs/$slug"
       params={{ lang, slug: page.slug }}
       className={cn(
-        'group rounded-[var(--radius-card)] border border-rule px-4 py-3 transition-colors hover:border-accent-strong',
+        'group rounded-[var(--radius-card)] border border-rule bg-surface px-4 py-3 transition-colors hover:border-accent-strong',
         direction === 'next' && 'sm:text-right',
       )}
     >

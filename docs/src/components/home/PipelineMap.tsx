@@ -14,7 +14,7 @@ function Node({ node, emphasis = false }: { node: MapNode; emphasis?: boolean })
       params={{ lang, slug: node.slug }}
       {...(node.hash ? { hash: node.hash } : {})}
       className={cn(
-        'group block min-w-0 flex-1 rounded-[var(--radius-card)] border bg-paper px-4 py-3.5 transition-[border-color] duration-200',
+        'group block min-w-0 flex-1 rounded-[var(--radius-card)] border bg-surface px-4 py-3.5 transition-[border-color] duration-200',
         'hover:border-focus',
         emphasis ? 'border-rule-2' : 'border-rule',
       )}

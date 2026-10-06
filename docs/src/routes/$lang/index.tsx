@@ -60,7 +60,7 @@ function Home() {
               </Link>
             </div>
           </div>
-          <figure className="w-full max-w-[50rem] overflow-hidden rounded-[var(--radius-card)] border border-rule">
+          <figure className="w-full max-w-[50rem] overflow-hidden rounded-[var(--radius-card)] border border-rule-2 shadow-[0_24px_60px_-24px_var(--color-shadow)]">
             <img
               src={`${import.meta.env.BASE_URL}example.gif`}
               alt={content.demoAlt}
@@ -91,7 +91,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-graphite text-on-graphite">
+      <section className="border-y border-rule bg-graphite text-on-graphite">
         <div
           className={`${container} grid gap-8 py-16 md:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] md:items-center md:gap-14 lg:py-20`}
         >

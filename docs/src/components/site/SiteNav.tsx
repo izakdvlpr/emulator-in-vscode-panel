@@ -26,7 +26,7 @@ export function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-rule bg-chrome">
+    <header className="sticky top-0 z-40 border-b border-rule bg-chrome/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-3 px-4 sm:px-6">
         <Link
           to="/$lang"

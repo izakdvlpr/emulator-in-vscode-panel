@@ -13,6 +13,8 @@
   --color-rule-2: var(--color-rule-2);
   --color-accent-strong: var(--color-accent);
   --color-chrome: var(--color-chrome);
+  --color-surface: var(--color-surface);
+  --color-shadow: var(--color-shadow);
   --color-focus: var(--color-focus);
   --color-button: var(--color-button);
   --color-button-hover: var(--color-button-hover);
@@ -33,9 +35,9 @@
   /* Nomes esperados pelos componentes do shadcn/ui */
   --color-background: var(--color-paper);
   --color-foreground: var(--color-ink);
-  --color-popover: var(--color-paper);
+  --color-popover: var(--color-surface);
   --color-popover-foreground: var(--color-ink);
-  --color-card: var(--color-paper);
+  --color-card: var(--color-surface);
   --color-card-foreground: var(--color-ink);
   --color-primary: var(--color-button);
   --color-primary-foreground: var(--color-button-ink);

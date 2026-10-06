@@ -41,7 +41,7 @@ export function CodeBlock({
         'not-first:mt-5 overflow-hidden rounded-[var(--radius-card)] border',
         graphite
           ? 'border-graphite-rule bg-graphite-2 text-on-graphite'
-          : 'border-rule bg-graphite text-on-graphite shadow-[0_1px_2px_var(--color-scrim)]',
+          : 'border-rule bg-graphite text-on-graphite shadow-[0_1px_2px_var(--color-shadow)]',
         className,
       )}
     >
