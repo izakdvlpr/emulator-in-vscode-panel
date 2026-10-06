@@ -6,7 +6,7 @@ import { MarketplaceBadge } from '@/components/site/MarketplaceBadge';
 import { buttonVariants } from '@/components/ui/button';
 import { docsByGroup } from '@/content/docs';
 import { home } from '@/content/home';
-import { localeSchema } from '@/i18n/locales';
+import { defaultLocale, localeSchema } from '@/i18n/locales';
 import { messages } from '@/i18n/messages';
 import { useLocale, useMessages } from '@/i18n/useLocale';
 import { manifest } from '@/lib/manifest';
@@ -17,7 +17,7 @@ const quickStartCode = `code --install-extension ${extensionId}`;
 
 export const Route = createFileRoute('/$lang/')({
   head: ({ params }) => {
-    const lang = localeSchema.catch('pt').parse(params.lang);
+    const lang = localeSchema.catch(defaultLocale).parse(params.lang);
     return {
       meta: [{ title: messages[lang].brand }, { name: 'description', content: home[lang].lede }],
     };

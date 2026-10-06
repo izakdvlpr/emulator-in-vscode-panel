@@ -6,6 +6,4 @@ export type Locale = z.infer<typeof localeSchema>;
 
 export const locales = localeSchema.options;
 
-export function detectLocale(languages: readonly string[]): Locale {
-  return languages.some((language) => language.toLowerCase().startsWith('pt')) ? 'pt' : 'en';
-}
+export const defaultLocale: Locale = 'en';

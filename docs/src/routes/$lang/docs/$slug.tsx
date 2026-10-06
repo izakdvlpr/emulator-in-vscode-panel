@@ -4,7 +4,7 @@ import { DocsSidebar } from '@/components/site/DocsSidebar';
 import { NotFound } from '@/components/site/NotFound';
 import { getDoc, getNeighbors } from '@/content/docs';
 import type { DocPage } from '@/content/types';
-import { localeSchema } from '@/i18n/locales';
+import { defaultLocale, localeSchema } from '@/i18n/locales';
 import { messages } from '@/i18n/messages';
 import { useLocale, useMessages } from '@/i18n/useLocale';
 import { repositoryUrl } from '@/lib/site';
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/$lang/docs/$slug')({
     if (!getDoc(params.slug)) throw notFound();
   },
   head: ({ params }) => {
-    const lang = localeSchema.catch('pt').parse(params.lang);
+    const lang = localeSchema.catch(defaultLocale).parse(params.lang);
     const content = getDoc(params.slug)?.content[lang];
     if (!content) return {};
     return {
