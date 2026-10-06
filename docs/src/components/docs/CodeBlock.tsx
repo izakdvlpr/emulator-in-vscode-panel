@@ -34,6 +34,7 @@ export function CodeBlock({
   }
 
   const graphite = tone === 'graphite';
+  const lines = code.split('\n');
 
   return (
     <figure
@@ -41,7 +42,7 @@ export function CodeBlock({
         'not-first:mt-5 overflow-hidden rounded-[var(--radius-card)] border',
         graphite
           ? 'border-graphite-rule bg-graphite-2 text-on-graphite'
-          : 'border-rule bg-graphite text-on-graphite shadow-[0_1px_2px_var(--color-shadow)]',
+          : 'border-rule bg-graphite text-on-graphite',
         className,
       )}
     >
@@ -71,7 +72,24 @@ export function CodeBlock({
         </button>
       </figcaption>
       <pre className="overflow-x-auto px-4 py-3.5 font-mono text-[0.85rem] leading-6">
-        <code>{code}</code>
+        {lines.length > 1 ? (
+          <code className="table">
+            {lines.map((line, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: linhas estáticas do snippet
+              <span key={index} className="table-row">
+                <span
+                  aria-hidden
+                  className="table-cell pr-5 text-right text-on-graphite-muted/60 select-none"
+                >
+                  {index + 1}
+                </span>
+                <span className="table-cell">{line}</span>
+              </span>
+            ))}
+          </code>
+        ) : (
+          <code>{code}</code>
+        )}
       </pre>
     </figure>
   );

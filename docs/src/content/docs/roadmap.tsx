@@ -11,9 +11,9 @@ const statusLabel: Record<Locale, Record<Status, string>> = {
 };
 
 const statusColor: Record<Status, string> = {
-  done: 'text-ok',
-  planned: 'text-accent',
-  dropped: 'text-muted',
+  done: 'text-ink',
+  planned: 'text-ink-2',
+  dropped: 'text-muted line-through decoration-rule-2',
 };
 
 function StatusTag({ status, locale }: { status: Status; locale: Locale }) {

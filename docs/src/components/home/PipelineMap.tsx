@@ -14,18 +14,18 @@ function Node({ node, emphasis = false }: { node: MapNode; emphasis?: boolean })
       params={{ lang, slug: node.slug }}
       {...(node.hash ? { hash: node.hash } : {})}
       className={cn(
-        'group block min-w-0 flex-1 rounded-[var(--radius-card)] border bg-surface px-4 py-3.5 transition-[border-color] duration-200',
+        'group block min-w-0 flex-1 rounded-[var(--radius-control)] border bg-surface px-4 py-3.5 transition-[border-color] duration-200',
         'hover:border-focus',
         emphasis ? 'border-rule-2' : 'border-rule',
       )}
     >
-      <span className="text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase">
+      <span className="font-mono text-[0.7rem] tracking-[0.06em] text-muted uppercase">
         {node.tag}
       </span>
-      <span className="mt-1 block font-display text-[1.05rem] font-semibold text-ink transition-colors group-hover:text-accent-strong">
+      <span className="mt-1.5 block font-heading text-[1.05rem] font-medium tracking-[-0.02em] text-ink">
         {node.title}
       </span>
-      <span className="mt-2 block space-y-0.5 font-mono text-[0.75rem] leading-5 text-ink-2">
+      <span className="mt-2 block space-y-0.5 font-mono text-[0.75rem] leading-5 text-muted">
         {node.lines.map((line) => (
           <span key={line} className="block break-words">
             {line}
@@ -89,7 +89,7 @@ function Lane({
   capture: MapNode;
 }) {
   return (
-    <div className="rounded-[calc(var(--radius-card)+4px)] border border-dashed border-rule-2 p-2.5">
+    <div className="rounded-[var(--radius-card)] border border-dashed border-rule-2 p-2.5">
       <p className="flex items-center gap-2 px-1.5 pb-2 text-[0.8rem] font-semibold text-ink-2">
         {/* Mesmas cores de plataforma da webview (--android / --ios). */}
         <span
@@ -141,9 +141,6 @@ export function PipelineMap({ content }: { content: HomeContent['map'] }) {
           <Node node={nodes.webview} emphasis />
         </Step>
       </div>
-      <figcaption className="mt-4 font-mono text-[0.72rem] tracking-[0.04em] text-muted">
-        {content.label}
-      </figcaption>
     </figure>
   );
 }

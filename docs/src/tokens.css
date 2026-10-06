@@ -1,51 +1,71 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Map / Diagram · theme: custom (vibe: "editor à noite, preto azulado, acento VS Code")
- * paper oklch(15.5% 0.008 260) · accent oklch(74% 0.14 245) cool · fonts: system UI + editor mono · axes: dark / grotesk-sans / cool
- * enrichment: hand-built diagram (Tier B) + real demo GIF · nav: N13 · footer: Ft2 · tone: technical
- * Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4
+/* Hallmark · genre: modern-minimal · macrostructure: Product Showcase (alternating centred / left) · theme: custom (study: resend.com, vibe: "preto puro, monocromático, serif de display")
+ * paper oklch(0% 0 0) · accent: none (monochrome) · fonts: Instrument Serif + Geist + Geist Mono · axes: dark / serif-display + grotesk / neutral
+ * enrichment: real demo GIF + hand-built diagram (Tier B) + radial glow · nav: N13 · footer: Ft3 (columns) · tone: technical
+ * Hallmark · pre-emit critique: P4 H5 E4 S4 R5 V4
  */
 
-/* Tema único escuro. Parte do Dark Modern do VS Code (mesmo acento e cores de plataforma
- * da webview), mas com o papel mais fundo e neutros levemente frios. */
+/* Tema único escuro e monocromático. Sem cor de acento: hierarquia vem de luminância,
+ * peso e tamanho. Só ok/warn mantêm matiz porque carregam estado. */
 :root {
   color-scheme: dark;
 
-  --color-paper: oklch(15.5% 0.008 260);
-  --color-chrome: oklch(13% 0.008 260);
-  --color-surface: oklch(19% 0.01 260);
-  --color-paper-2: oklch(20.5% 0.011 260);
-  --color-paper-3: oklch(24.5% 0.012 260);
-  --color-ink: oklch(96% 0.004 260);
-  --color-ink-2: oklch(82% 0.008 260);
-  --color-muted: oklch(66% 0.012 260);
-  --color-rule: oklch(24% 0.012 260);
-  --color-rule-2: oklch(33% 0.014 260);
-  --color-accent: oklch(74% 0.14 245);
-  --color-accent-soft: oklch(28% 0.07 250);
-  --color-focus: oklch(68% 0.16 250);
-  --color-button: oklch(56% 0.17 252);
-  --color-button-hover: oklch(52% 0.16 252);
+  --color-paper: oklch(0% 0 0);
+  --color-chrome: oklch(0% 0 0);
+  --color-surface: oklch(9% 0 0);
+  --color-paper-2: oklch(14% 0 0);
+  --color-paper-3: oklch(20% 0 0);
+  --color-ink: oklch(95.5% 0 0);
+  --color-ink-2: oklch(84% 0 0);
+  --color-muted: oklch(70% 0 0);
+  --color-rule: oklch(22% 0 0);
+  --color-rule-2: oklch(31% 0 0);
+  --color-accent: oklch(98% 0 0);
+  --color-accent-soft: oklch(18% 0 0);
+  --color-focus: oklch(88% 0 0);
+  --color-button: oklch(16% 0 0);
+  --color-button-hover: oklch(22% 0 0);
+  --color-button-rule: oklch(100% 0 0 / 0.09);
   --color-button-ink: oklch(100% 0 0);
-  --color-graphite: oklch(11.5% 0.006 260);
-  --color-graphite-2: oklch(17% 0.01 260);
-  --color-graphite-rule: oklch(24% 0.012 260);
-  --color-on-graphite: oklch(86% 0.006 260);
-  --color-on-graphite-muted: oklch(68% 0.012 260);
-  --color-accent-on-graphite: oklch(76% 0.13 245);
+  --color-graphite: oklch(6% 0 0);
+  --color-graphite-2: oklch(9% 0 0);
+  --color-graphite-rule: oklch(20% 0 0);
+  --color-on-graphite: oklch(88% 0 0);
+  --color-on-graphite-muted: oklch(62% 0 0);
+  --color-accent-on-graphite: oklch(98% 0 0);
   --color-ok: oklch(76.7% 0.117 154);
   --color-warn: oklch(66.5% 0.205 27);
-  --color-android: oklch(79.4% 0.128 143); /* charts.green da webview */
-  --color-ios: oklch(77.9% 0.119 247); /* charts.blue da webview */
-  --color-scrim: oklch(0% 0 0 / 0.6);
-  --color-shadow: oklch(0% 0 0 / 0.45);
+  /* Plataformas diferenciadas por luminância, não por matiz. */
+  --color-android: oklch(92% 0 0);
+  --color-ios: oklch(62% 0 0);
+  --color-scrim: oklch(0% 0 0 / 0.7);
+  --color-shadow: oklch(0% 0 0 / 0.6);
+  --color-glow: oklch(100% 0 0 / 0.07);
+  --color-heading-fade: oklch(100% 0 0 / 0.55);
 
-  --font-display:
-    -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, Ubuntu, "Droid Sans",
-    sans-serif;
-  --font-body: var(--font-display);
-  --font-code: ui-monospace, Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace;
+  --gradient-button: linear-gradient(
+    104deg,
+    oklch(100% 0 0 / 0.06) 5%,
+    oklch(100% 0 0 / 0.12) 100%
+  );
+  --gradient-heading: linear-gradient(
+    to right bottom,
+    var(--color-accent) 30%,
+    var(--color-heading-fade)
+  );
+  --gradient-glow: radial-gradient(60% 55% at 70% 0%, var(--color-glow), transparent 70%);
+  --gradient-glow-low: radial-gradient(50% 70% at 50% 100%, var(--color-glow), transparent 70%);
 
-  --text-display: clamp(2rem, 2.6vw + 1rem, 3.25rem);
-  --text-display-s: clamp(1.75rem, 1.8vw + 1rem, 2.5rem);
+  --font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+  --font-heading:
+    "Geist Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-heading);
+  --font-code: "Geist Mono Variable", ui-monospace, Menlo, Monaco, Consolas, monospace;
+
+  --text-display: clamp(2.75rem, 3.4vw + 1.25rem, 4.75rem);
+  --text-display-s: clamp(2.5rem, 2.2vw + 1.5rem, 3.5rem);
+  --text-section: clamp(2rem, 2.2vw + 1rem, 3.5rem);
+  --tracking-section: -0.045em;
+  --tracking-display: -0.01em;
 
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
@@ -55,10 +75,11 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 5rem;
+  --space-4xl: 8rem;
 
-  /* Mesmos raios da webview (--radius e menus). */
-  --radius-control: 6px;
-  --radius-card: 8px;
+  --radius-control: 10px;
+  --radius-card: 16px;
+  --radius-panel: 24px;
   --rule-hair: 1px;
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -66,5 +87,5 @@
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-fast: 150ms;
   --dur-base: 220ms;
-  --dur-reveal: 500ms;
+  --dur-reveal: 600ms;
 }

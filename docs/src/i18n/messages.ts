@@ -45,6 +45,9 @@ export interface Messages {
     license: string;
     source: string;
     createdBy: string;
+    docs: string;
+    project: string;
+    language: string;
   };
 }
 
@@ -98,6 +101,9 @@ export const messages: Record<Locale, Messages> = {
       license: 'Licença MIT',
       source: 'Código no GitHub',
       createdBy: 'Criado por',
+      docs: 'Documentação',
+      project: 'Projeto',
+      language: 'Idioma',
     },
   },
   en: {
@@ -149,6 +155,9 @@ export const messages: Record<Locale, Messages> = {
       license: 'MIT license',
       source: 'Source on GitHub',
       createdBy: 'Created by',
+      docs: 'Documentation',
+      project: 'Project',
+      language: 'Language',
     },
   },
 };

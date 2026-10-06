@@ -46,17 +46,17 @@ function DocView({ doc }: { doc: DocPage }) {
   const active = useActiveSection(content.sections.map((section) => section.id));
 
   return (
-    <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:grid lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[14.5rem_minmax(0,1fr)_13rem]">
+    <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:grid lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[14.5rem_minmax(0,1fr)_13rem]">
       <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto py-10 pr-2 lg:block">
         <DocsSidebar />
       </aside>
 
       <article className="min-w-0 max-w-[46rem] py-10 lg:py-14">
-        <p className="text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase">
+        <p className="font-mono text-xs tracking-[0.06em] text-muted uppercase">
           {t.groups[doc.group]}
         </p>
-        <h1 className="mt-3 text-display-s leading-[1.08] font-semibold">{content.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-ink-2">{content.description}</p>
+        <h1 className="mt-4 text-display-s leading-[1.04]">{content.title}</h1>
+        <p className="mt-5 text-lg leading-8 text-muted">{content.description}</p>
         {content.intro ? <div className="mt-6">{content.intro}</div> : null}
 
         {content.sections.map((section) => (
@@ -66,7 +66,10 @@ function DocView({ doc }: { doc: DocPage }) {
             aria-labelledby={`${section.id}-title`}
             className="mt-14 first-of-type:mt-12"
           >
-            <h2 id={`${section.id}-title`} className="group text-2xl leading-tight font-semibold">
+            <h2
+              id={`${section.id}-title`}
+              className="group text-[1.75rem] leading-tight tracking-[-0.035em]"
+            >
               <a href={`#${section.id}`} className="inline">
                 {section.title}
                 <span
@@ -106,7 +109,7 @@ function DocView({ doc }: { doc: DocPage }) {
       </article>
 
       <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto py-14 xl:block">
-        <p className="text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase">
+        <p className="font-mono text-xs tracking-[0.06em] text-muted uppercase">
           {t.docs.onThisPage}
         </p>
         <ul className="mt-3 space-y-px border-l border-rule">
@@ -148,13 +151,13 @@ function NeighborLink({
       to="/$lang/docs/$slug"
       params={{ lang, slug: page.slug }}
       className={cn(
-        'group rounded-[var(--radius-card)] border border-rule bg-surface px-4 py-3 transition-colors hover:border-accent-strong',
+        'group rounded-[var(--radius-card)] border border-rule px-5 py-4 transition-colors hover:border-rule-2 hover:bg-surface',
         direction === 'next' && 'sm:text-right',
       )}
     >
       <span
         className={cn(
-          'flex items-center gap-1.5 text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase',
+          'flex items-center gap-1.5 font-mono text-xs tracking-[0.06em] text-muted uppercase',
           direction === 'next' && 'sm:justify-end',
         )}
       >
@@ -162,7 +165,7 @@ function NeighborLink({
         {label}
         {direction === 'next' ? <Icon className="size-3.5" aria-hidden /> : null}
       </span>
-      <span className="mt-1 block font-medium text-ink group-hover:text-accent-strong">
+      <span className="mt-1.5 block font-medium text-ink-2 transition-colors group-hover:text-ink">
         {page.content[lang].title}
       </span>
     </Link>

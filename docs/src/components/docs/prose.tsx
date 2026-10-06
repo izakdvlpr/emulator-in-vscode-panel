@@ -16,7 +16,7 @@ export function P({ className, ...props }: ComponentProps<'p'>) {
 }
 
 export function H3({ className, ...props }: ComponentProps<'h3'>) {
-  return <h3 className={cn('mt-8 text-lg font-semibold', className)} {...props} />;
+  return <h3 className={cn('mt-9 text-lg tracking-[-0.02em]', className)} {...props} />;
 }
 
 export function Strong(props: ComponentProps<'strong'>) {
@@ -27,7 +27,7 @@ export function Code({ className, ...props }: ComponentProps<'code'>) {
   return (
     <code
       className={cn(
-        'rounded-[3px] bg-paper-3 px-1 py-px font-mono text-[0.86em] break-words text-ink',
+        'rounded-[5px] border border-rule bg-paper-2 px-1 py-px font-mono text-[0.84em] break-words text-ink',
         className,
       )}
       {...props}
@@ -39,7 +39,7 @@ export function Kbd({ className, ...props }: ComponentProps<'kbd'>) {
   return (
     <kbd
       className={cn(
-        'inline-flex min-w-[1.6em] items-center justify-center rounded-[3px] border border-rule-2 border-b-2 bg-paper-2 px-1 text-[0.8em] leading-5 text-ink',
+        'inline-flex min-w-[1.6em] items-center justify-center rounded-[5px] border border-rule-2 border-b-2 bg-paper-2 px-1 font-mono text-[0.78em] leading-5 text-ink',
         className,
       )}
       {...props}
@@ -73,8 +73,8 @@ export function Steps({ className, ...props }: ComponentProps<'ol'>) {
 
 export function Note({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <aside className="not-first:mt-6 rounded-[var(--radius-card)] border border-rule bg-paper-2 px-4 py-3 text-[0.95rem] leading-7">
-      <p className="text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase">{label}</p>
+    <aside className="not-first:mt-6 rounded-[var(--radius-card)] border border-rule bg-surface px-5 py-4 text-[0.95rem] leading-7">
+      <p className="font-mono text-xs tracking-[0.06em] text-muted uppercase">{label}</p>
       <div className="mt-1">{children}</div>
     </aside>
   );
@@ -84,7 +84,7 @@ export function ExternalLink({ className, ...props }: ComponentProps<'a'>) {
   return (
     <a
       className={cn(
-        'font-medium text-ink underline decoration-rule-2 underline-offset-4 transition-colors hover:decoration-accent-strong',
+        'font-medium text-ink underline decoration-rule-2 underline-offset-4 transition-colors hover:decoration-ink',
         className,
       )}
       target="_blank"
@@ -109,7 +109,7 @@ export function DocLink({
       to="/$lang/docs/$slug"
       params={{ lang, slug }}
       {...(hash ? { hash } : {})}
-      className="font-medium text-ink underline decoration-rule-2 underline-offset-4 transition-colors hover:decoration-accent-strong"
+      className="font-medium text-ink underline decoration-rule-2 underline-offset-4 transition-colors hover:decoration-ink"
     >
       {children}
     </Link>
@@ -124,7 +124,7 @@ export function DataTable({
   rows: readonly (readonly ReactNode[])[];
 }) {
   return (
-    <div className="not-first:mt-5 rounded-[var(--radius-card)] border border-rule">
+    <div className="not-first:mt-5 overflow-hidden rounded-[var(--radius-card)] border border-rule">
       <Table className="text-[0.9rem]">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -132,7 +132,7 @@ export function DataTable({
               <TableHead
                 // biome-ignore lint/suspicious/noArrayIndexKey: colunas fixas, sem reordenação
                 key={index}
-                className="h-10 bg-paper-2 px-3 text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase"
+                className="h-10 bg-surface px-3 font-mono text-xs font-normal tracking-[0.06em] text-muted uppercase"
               >
                 {cell}
               </TableHead>

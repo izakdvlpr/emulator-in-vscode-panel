@@ -18,7 +18,7 @@ export function LangSwitch({ className }: { className?: string }) {
       aria-label={t.switchLanguage}
       title={t.switchLanguage}
       className={cn(
-        'inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-control)] px-2.5 font-mono text-xs tracking-[0.04em] text-muted uppercase transition-colors hover:bg-paper-2 hover:text-ink',
+        'inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 font-mono text-xs tracking-[0.04em] text-muted uppercase transition-colors hover:bg-paper-2 hover:text-ink',
         className,
       )}
     >

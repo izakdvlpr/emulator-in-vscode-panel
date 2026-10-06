@@ -39,6 +39,11 @@ export interface HomeContent {
   index: {
     title: string;
   };
+  closing: {
+    title: string;
+    lede: string;
+    cta: string;
+  };
 }
 
 export const home: Record<Locale, HomeContent> = {
@@ -111,6 +116,11 @@ export const home: Record<Locale, HomeContent> = {
     index: {
       title: 'Documentação',
     },
+    closing: {
+      title: 'O device, dentro do editor.',
+      lede: 'Grátis e open source, para Android e iOS.',
+      cta: 'Instalar no VS Code',
+    },
   },
   en: {
     title: 'Android Emulator and iOS Simulator inside VS Code.',
@@ -180,6 +190,11 @@ export const home: Record<Locale, HomeContent> = {
     },
     index: {
       title: 'Documentation',
+    },
+    closing: {
+      title: 'The device, inside the editor.',
+      lede: 'Free and open source, for Android and iOS.',
+      cta: 'Install in VS Code',
     },
   },
 };
