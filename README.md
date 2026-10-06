@@ -16,13 +16,13 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://img.shields.io/badge/Marketplace-75beff?&style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwMzE1ZiI+PHJlY3QgeD0iMiIgeT0iNyIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIyIiB5PSIxNSIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIxMCIgeT0iMTUiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIi8+PHJlY3QgeD0iMTMiIHk9IjIiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSAxNi41IDUuNSkiLz48L3N2Zz4K"></a>
-  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/"><img src="https://img.shields.io/badge/Documentation-75beff?&style=for-the-badge&logo=readthedocs&logoColor=00315f"></a>
-  <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel"><img src="https://img.shields.io/badge/Github-75beff?&style=for-the-badge&logo=github&logoColor=00315f"></a>
-  <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel/issues"><img src="https://img.shields.io/badge/Issues-75beff?&style=for-the-badge&logo=github&logoColor=00315f"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=izakdvlpr.vscode-emulator-panel"><img src="https://img.shields.io/badge/Marketplace-000000?&style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZmZmZiI+PHJlY3QgeD0iMiIgeT0iNyIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIyIiB5PSIxNSIgd2lkdGg9IjciIGhlaWdodD0iNyIgcng9IjEiLz48cmVjdCB4PSIxMCIgeT0iMTUiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIi8+PHJlY3QgeD0iMTMiIHk9IjIiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIHJ4PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSAxNi41IDUuNSkiLz48L3N2Zz4K"></a>
+  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/"><img src="https://img.shields.io/badge/Documentation-000000?&style=for-the-badge&logo=readthedocs&logoColor=ffffff"></a>
+  <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel"><img src="https://img.shields.io/badge/Github-000000?&style=for-the-badge&logo=github&logoColor=ffffff"></a>
+  <a href="https://github.com/izakdvlpr/emulator-in-vscode-panel/issues"><img src="https://img.shields.io/badge/Issues-000000?&style=for-the-badge&logo=github&logoColor=ffffff"></a>
   <br>
-  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/requirements"><img src="https://img.shields.io/badge/Android-75beff?&style=for-the-badge&logo=android&logoColor=00315f"></a>
-  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/ios"><img src="https://img.shields.io/badge/iOS-75beff?&style=for-the-badge&logo=apple&logoColor=00315f"></a>
+  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/requirements"><img src="https://img.shields.io/badge/Android-000000?&style=for-the-badge&logo=android&logoColor=ffffff"></a>
+  <a href="https://izakdvlpr.github.io/emulator-in-vscode-panel/en/docs/ios"><img src="https://img.shields.io/badge/iOS-000000?&style=for-the-badge&logo=apple&logoColor=ffffff"></a>
 </p>
 
 <p align="center">
